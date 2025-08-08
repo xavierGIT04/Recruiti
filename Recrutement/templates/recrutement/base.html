@@ -1,0 +1,240 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HANDRES</title>
+  <link rel="shortcut icon" type="image/png" href="{% static 'assets/images/logos/favicon.ico' %}" />
+  <link rel="stylesheet" href="{% static 'assets/css/styles.min.css' %}" />
+  <link href="{% static 'assets/libs/bootstrap/dist/css/bootstrap.min.css' %}"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="{% static 'assets/css/fiche_poste.css' %}">
+
+
+</head>
+
+<body style="padding:0; margin:0;">
+
+  <!-- Barre de navigation supérieure (corrigée) -->
+  <nav class="app-topstrip bg-primary py-6 px-5 w-100 d-lg-flex  justify-content-between">
+    <div class=" d-flex align-items-center justify-content-center">
+        <div class=" position-relative">
+            <div class="preloader-img pere-text">
+              <a href="{% url 'index' %}" style="font-family: Helvetica; font-size: 20px; font-weight: bold; color: #fff; letter-spacing: 1px; text-transform: uppercase;text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1); ">HANDRES</a>
+            </div>
+        </div>
+    </div>
+    <div class="d-lg-flex align-items-center gap-2">
+        <h3 class="text-white mb-2 mb-lg-0 fs-5 text-center">Connecter en tant que {{username}}</h3>
+        <div class="d-flex align-items-center justify-content-center gap-2">
+          <div class="dropdown d-flex">
+            <a class="btn btn-light d-flex align-items-center gap-1 " href="{% url 'index' %}" id="drop4">
+              Se deconnecter
+              <i ></i>
+            </a>
+          </div>
+        </div>
+    </div>
+  </nav>
+
+  <!-- Le reste du contenu de la page, y compris la barre latérale et le contenu principal -->
+  <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
+
+    <!-- Barre latérale -->
+    <aside class="left-sidebar" STYLE="width: 270px;">
+      <div class="brand-logo d-flex align-items-center justify-content-between"><strong>MENU DE NAVIGATION</strong></div>
+      <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+        <ul id="sidebarnav">
+          <li class="nav-small-cap">
+            <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-4"></iconify-icon>
+            <span class="hide-menu">RECRUTEMENT</span>
+          </li>
+          <li class="sidebar-item">
+            <a class="sidebar-link" href="{% url 'recrutement:index' %}" aria-expanded="false">
+              <i class="ti ti-atom"></i>
+              <span class="hide-menu">Dashboard</span>
+            </a>
+          </li>
+          <!-- ---------------------------------- -->
+          <!-- Dashboard -->
+          <!-- ---------------------------------- -->
+
+          <li class="sidebar-item">
+            <a class="sidebar-link justify-content-between has-arrow" href="javascript:void(0)" aria-expanded="false">
+              <div class="d-flex align-items-center gap-3">
+                <span class="d-flex">
+                  <i class="fas fa-file-alt"></i>
+                </span>
+                <span class="hide-menu">Fiche de Poste</span>
+              </div>
+            </a>
+            <ul aria-expanded="false" class="collapse first-level">
+              <li class="sidebar-item">
+                <a class="sidebar-link justify-content-between"
+                  href="{% url 'recrutement:list_poste' %}">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="round-16 d-flex align-items-center justify-content-center">
+                      <i class="ti ti-circle"></i>
+                    </div>
+                    <span class="hide-menu">Toutes les fiches</span>
+                  </div>
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a class="sidebar-link justify-content-between"
+                  href="{% url 'recrutement:add_poste' %}">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="round-16 d-flex align-items-center justify-content-center">
+                      <i class="ti ti-circle"></i>
+                    </div>
+                    <span class="hide-menu">Ajouter une fiche</span>
+                  </div>
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a class="sidebar-link justify-content-between"
+                  href="{% url 'recrutement:poste_a_publier' %}">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="round-16 d-flex align-items-center justify-content-center">
+                      <i class="ti ti-circle"></i>
+                    </div>
+                    <span class="hide-menu">Publier une fiche</span>
+                  </div>
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a class="sidebar-link justify-content-between"
+                  href="{% url 'recrutement:poste_a_depublier' %}">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="round-16 d-flex align-items-center justify-content-center">
+                      <i class="ti ti-circle"></i>
+                    </div>
+                    <span class="hide-menu">Dépublier une fiche</span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li>
+            <span class="sidebar-divider lg"></span>
+          </li>
+          <li class="sidebar-item">
+            <a class="sidebar-link justify-content-between has-arrow" href="javascript:void(0)" aria-expanded="false">
+              <div class="d-flex align-items-center gap-3">
+                  <span>
+                    <i class="fas fa-users"></i>
+                  </span>
+                  <span class="hide-menu">Candidatures</span>
+              </div>
+            </a>
+            <ul aria-expanded="false" class="collapse first-level">
+              <li class="sidebar-item">
+                <a class="sidebar-link justify-content-between"
+                  href="{% url 'recrutement:candidatures_soumises' %}">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="round-16 d-flex align-items-center justify-content-center">
+                      <i class="ti ti-circle"></i>
+                    </div>
+                    <span class="hide-menu">Candidatures Soumises</span>
+                  </div>
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a class="sidebar-link justify-content-between"
+                  href="{% url 'recrutement:preselection' %}">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="round-16 d-flex align-items-center justify-content-center">
+                      <i class="ti ti-circle"></i>
+                    </div>
+                    <span class="hide-menu">Candidatures Présélectionnées</span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="sidebar-item">
+            <a class="sidebar-link justify-content-between has-arrow" href="javascript:void(0)" aria-expanded="false">
+              <div class="d-flex align-items-center gap-3">
+                <span class="d-flex">
+                  <i class="fas fa-comments"></i>
+                </span>
+                <span class="hide-menu">Entretiens</span>
+              </div>
+            </a>
+            <ul aria-expanded="false" class="collapse first-level">
+              <li class="sidebar-item">
+                <a class="sidebar-link justify-content-between"
+                  href="{% url 'recrutement:entretiens_programmés' %}">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="round-16 d-flex align-items-center justify-content-center">
+                      <i class="ti ti-circle"></i>
+                    </div>
+                    <span class="hide-menu">Entretiens en Programmées</span>
+                  </div>
+                </a>
+              </li>
+            <li class="sidebar-item">
+                <a class="sidebar-link justify-content-between"
+                  href="{% url 'recrutement:entretiens_terminés' %}">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="round-16 d-flex align-items-center justify-content-center">
+                      <i class="ti ti-circle"></i>
+                    </div>
+                    <span class="hide-menu">Entretiens Terminées</span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="sidebar-item">
+            <a class="sidebar-link justify-content-between has-arrow" href="javascript:void(0)" aria-expanded="false">
+              <div class="d-flex align-items-center gap-3">
+                <span class="d-flex">
+                  <i class="fas fa-comments"></i>
+                </span>
+                <span class="hide-menu"> Sélection Définitive </span>
+              </div>
+            </a>
+            <ul aria-expanded="false" class="collapse first-level">
+              <li class="sidebar-item">
+                <a class="sidebar-link justify-content-between"
+                  href="{% url 'recrutement:selection' %}">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="round-16 d-flex align-items-center justify-content-center">
+                      <i class="ti ti-circle"></i>
+                    </div>
+                    <span class="hide-menu">Candidatures Définitives Par Poste </span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Contenu principal -->
+    <div class="body-wrapper" >
+      {% block header %}{% endblock %}
+      <div class="body-wrapper-inner">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  </div>
+
+
+  <script src="{% static 'assets/libs/jquery/dist/jquery.min.js' %}"></script>
+  <script src="{% static 'assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'assets/js/sidebarmenu.js' %}"></script>
+  <script src="{% static 'assets/js/app.min.js' %}"></script>
+  <script src="{% static 'assets/libs/apexcharts/dist/apexcharts.min.js' %}"></script>
+  <script src="{% static 'assets/libs/simplebar/dist/simplebar.js' %}"></script>
+  <script src="{% static 'assets/js/dashboard.js' %}"></script>
+  <!-- solar icons -->
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+</body>
+
+</html>

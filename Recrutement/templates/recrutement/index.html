@@ -1,0 +1,94 @@
+{% extends 'recrutement/base.html' %}
+
+{% load static %}
+{% block header %}
+      <header class="app-header">
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard</li>
+          </ol>
+
+        </nav>
+      </header>
+{% endblock %}
+
+{% block content %}
+
+           <div class="container-fluid">
+               <h1> LISTE DES POSTES  </h1>
+               <a type="button" class="btn btn-primary " href="{% url 'recrutement:add_poste' %}" > Ajouter une fiche </a>
+
+                    {% if fiches %}
+                                        {% for fiche in fiches %}
+
+                                            <div class="single-job-items mb-30">
+                                                <div class="job-items">
+                                                    <div class="company-img">
+                                                        <a href="#"><img src="{% static 'assets/images/icons/job-items.png' %}" alt=""></a>
+                                                    </div>
+                                                    <div class="job-tittle job-tittle2">
+                                                        <a href="{% url 'recrutement:detail_poste' fiche.id %}">
+                                                            <h4>{{fiche.titre_poste}}</h4>
+                                                        </a>
+                                                        <ul>
+                                                            <li>{{fiche.statu}}</li>
+                                                            <li><i class="fas fa-map-marker-alt"></i>{{fiche.lieu}}</li>
+                                                        </ul>
+                                                        <span> Horaire: 8H/jours</span>
+                                                    </div>
+                                                </div>
+                                                <div class="items-link items-link2 f-right">
+
+
+                                                            <div class="ms-auto">
+                                                                      <div class="dropdown">
+                                                                        <a href="javascript:void(0)" class="text-muted" id="year1-dropdown" data-bs-toggle="dropdown"
+                                                                          aria-expanded="false">
+                                                                          <i class="ti ti-dots fs-7"></i>
+                                                                        </a>
+                                                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="year1-dropdown">
+                                                                          <li>
+                                                                                <a class="dropdown-item" href="{% url 'recrutement:detail_poste' fiche.id %}">Consulter</a>
+                                                                          </li>
+                                                                          <li>
+                                                                                <a class="dropdown-item" href="{% url 'recrutement:modifier_fiche' fiche.id %}">Modifier</a>
+                                                                          </li>
+                                                                          <li>
+                                                                                <a class="dropdown-item" href="{% url 'recrutement:candidatures_par_fiche' fiche.id %}">Candidatures ({{ fiche.nbreCandidatures }})</a>
+                                                                          </li>
+                                                                          <li>
+                                                                                {% if fiche.statu == "publier" %}
+                                                                                    <a class="dropdown-item" href="{% url 'recrutement:depublier' fiche.id %}">Depublier</a>
+                                                                                {% elif fiche.statu == "nonpublier" %}
+                                                                                    <a class="dropdown-item" href="{% url 'recrutement:publier' fiche.id %}">Publier</a>
+                                                                                {% endif %}                                                                          </li>
+                                                                        </ul>
+                                                                      </div>
+                                                            </div>
+
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                    {% else %}
+                              <div class="card col-lg-9 text-center container">
+                                    <div class="card-body">
+                                      <h1>{{info}}</h1>
+                                      <a type="button" class="btn btn-primary " href="{% url 'recrutement:add_poste' %}" >
+                                        cliquez ici pour ajouter
+                                      </a>
+                                    </div>
+                              </div>
+
+                    {% endif %}
+
+
+            </div>
+
+
+
+
+
+{% endblock %}
+

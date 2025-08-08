@@ -1,0 +1,63 @@
+{% extends 'recrutement/base.html' %}
+{% load static %}
+
+{% block header %}
+      <header class="app-header">
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Home</a></li>
+            <li class="breadcrumb-item active">Candidatures-selectionees</li>
+          </ol>
+
+        </nav>
+      </header>
+{% endblock %}
+
+{% block content %}
+
+           <div class="container-fluid">
+           <span>il est important que vous verifiez d'abord si la fiche de poste concernée à un nombre de candidats sélectioné superieur à <strong>0</strong></span>
+            <h1> SELECTION DEFINITIVE PAR POSTE</h1>
+                    {% if fiches %}
+                                        {% for fiche in fiches %}
+
+                                            <div class="single-job-items mb-30">
+                                                <div class="job-items">
+                                                    <div class="company-img">
+                                                        <a href="#"><img src="{% static 'assets/images/icons/job-items.png' %}" alt=""></a>
+                                                    </div>
+                                                    <div class="job-tittle job-tittle2">
+                                                        <a href="{% url 'recrutement:detail_poste' fiche.id %}">
+                                                            <h4>{{fiche.titre_poste}}</h4>
+                                                        </a>
+                                                        <ul>
+                                                            <li>{{fiche.statu}}</li>
+                                                            <li><i class="fas fa-map-marker-alt"></i>{{fiche.lieu}}</li>
+                                                        </ul>
+                                                        <span> Horaire: 8H/jours</span>
+                                                    </div>
+                                                </div>
+                                                <div class="items-link items-link2 f-right">
+                                                    <a type="button" class="btn btn-primary"  href="{% url 'recrutement:candidat_selectionés' fiche.id %}"> Candidats sélectionnés ({{ fiche.nbreSelectioner }}) </a>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                    {% else %}
+                              <div class="card col-lg-11 text-center container">
+                                    <div class="card-body">
+                                      <h1>VOUS N'AVEZ PAS DE FICHE DE POSTE POUR AVOIR DES CANDIDATURES</h1>
+                                    </div>
+                              </div>
+
+                    {% endif %}
+
+
+            </div>
+
+
+
+
+
+{% endblock %}
+

@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offre d'emploi : {{fiche.poste}}</title>
+    <link rel="stylesheet" href="{% static 'assets/css/pdf_fiche.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+
+</head>
+</head>
+<body>
+    <div id="job-listing">
+        <header>
+            <h1>Titre du Poste : {{ fiche.poste }}</h1>
+            <p class="department"><i class="fas fa-building"></i> {{ fiche.departement }}</p>
+            <p class="location"><i class="fas fa-map-marker-alt"></i> {{ fiche.lieu }}</p>
+        </header>
+
+        <section class="job-details">
+            <h2>Description du Contrat</h2>
+            <ul class="tasks">
+                <li>Type de contrat : {{ fiche.contrat }} </li>
+
+                <li>Fin des dépots de dossiers : {{ fiche.date_fin_postulation }} </li>
+            </ul>
+
+            <h2>Missions</h2>
+            <ul class="tasks">
+                <li><i class="fas fa-tasks"></i> {{fiche.missions}}</li>
+                <li><i class="fas fa-tasks"></i> {{fiche.objectifs}}</li>
+            </ul>
+
+            <h2>Profil recherché</h2>
+            <ul class="skills">
+                <li><i class="fas fa-check-circle"></i> {{ fiche.competences_techniques }}</li>
+                <li><i class="fas fa-check-circle"></i> {{fiche.competences_transversales}}</li>
+                <li><i class="fas fa-check-circle"></i> {{fiche.formation}}</li>
+            </ul>
+
+        </section>
+
+        <div>
+            <span>Postuler via l'interface cette interface:  </span>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+.Python
+env/
+venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.venv/
+.tox/
+.mypy_cache/
+.pytest_cache/
+.coverage
+
+# Django-specific
+*.sqlite3 # Base de données SQLite locale
+media/candidatures/*
+!media/candidatures/.gitkeep
+media/fiche_poste/*
+!media/fiche_poste/.gitkeep
+Recrutement/google_calender/tokens/*
+!Recrutement/google_calender/tokens/.gitkeep
+*.log     # Fichiers de log
+
+# Environment variables
+.env
+.flaskenv
+
+# IDEs and Editors
+.idea/             # IntelliJ/PyCharm
+.vscode/           # VS Code
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store          # macOS
+Thumbs.db          # Windows
+ehthumbs.db        # Windows
+.directory         # Windows

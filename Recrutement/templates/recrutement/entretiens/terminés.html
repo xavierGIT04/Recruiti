@@ -1,0 +1,200 @@
+{% extends 'recrutement/base.html' %}
+{% load static %}
+
+
+{% block header %}
+      <header class="app-header">
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Home</a></li>
+            <li class="breadcrumb-item active">Entretiens/</li>
+            <li class="breadcrumb-item active">terminés</li>
+          </ol>
+
+        </nav>
+      </header>
+{% endblock %}
+
+{% block content %}
+
+
+             <div class="container">
+                     <style>
+                            body {
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                            background-color: #f4f7f6;
+                            color: #333;
+                            line-height: 1.6;
+                            margin: 0;
+                            padding: 20px;
+                        }
+
+                        .container {
+                            max-width: 900px;
+                            margin: 30px auto;
+                            background-color: #ffffff;
+                            padding: 30px;
+                            border-radius: 8px;
+                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                            position: relative;
+                            top: 100px;
+                        }
+
+                        h1 {
+                            color: #2c3e50;
+                            text-align: center;
+                            margin-bottom: 40px;
+                            font-size: 2.2em;
+                            border-bottom: 2px solid #eee;
+                            padding-bottom: 15px;
+                        }
+
+                        .entretien-list {
+                            display: grid;
+                            gap: 25px; /* Espace entre les cartes */
+                        }
+
+                        .entretien-card {
+                            background-color: #fdfdfd;
+                            border: 1px solid #e0e0e0;
+                            border-radius: 8px;
+                            padding: 25px;
+                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+                            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+                            display: flex;
+                            flex-direction: column;
+                        }
+
+                        .entretien-card:hover {
+                            transform: translateY(-5px);
+                            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+                        }
+
+                        .card-header {
+                            margin-bottom: 15px;
+                            padding-bottom: 10px;
+                            border-bottom: 1px dashed #e9ecef;
+                        }
+
+                        .card-header h2 {
+                            margin-top: 0;
+                            margin-bottom: 5px;
+                            color: #007bff; /* Bleu pour le nom du candidat */
+                            font-size: 1.6em;
+                        }
+
+                        .card-header .for-job {
+                            font-size: 0.8em;
+                            color: #6c757d;
+                            font-weight: normal;
+                        }
+
+
+                        .card-body {
+                            flex-grow: 1; /* Permet au corps de prendre l'espace disponible */
+                        }
+
+                        .datetime {
+                            font-size: 1.1em;
+                            font-weight: bold;
+                            color: #495057;
+                            margin-bottom: 15px;
+                        }
+
+                        .meet-button {
+                            display: inline-block;
+                            background-color: #28a745; /* Vert pour Meet */
+                            color: white;
+                            padding: 12px 25px;
+                            border-radius: 5px;
+                            text-decoration: none;
+                            font-weight: bold;
+                            font-size: 1.1em;
+                            margin-top: 15px;
+                            transition: background-color 0.2s ease, transform 0.1s ease;
+                            text-align: center;
+                        }
+
+                        .meet-button:hover {
+                            background-color: #218838;
+                            transform: translateY(-2px);
+                        }
+
+                        .no-entretiens {
+                            text-align: center;
+                            font-size: 1.2em;
+                            color: #666;
+                            padding: 50px 0;
+                            background-color: #f8f9fa;
+                            border-radius: 8px;
+                            margin-top: 30px;
+
+                        }
+
+                        /* Styles pour la réactivité (mobiles) */
+                        @media (max-width: 768px) {
+                            .container {
+                                margin: 15px;
+                                padding: 20px;
+                            }
+
+                            h1 {
+                                font-size: 1.8em;
+                                margin-bottom: 30px;
+                            }
+
+                            .entretien-card {
+                                padding: 20px;
+                            }
+
+                            .card-header h2 {
+                                font-size: 1.4em;
+                            }
+
+                            .meet-button {
+                                padding: 10px 20px;
+                                font-size: 1em;
+                                display: block; /* Le bouton prend toute la largeur sur mobile */
+                                width: calc(100% - 20px); /* Ajustement pour le padding */
+                                box-sizing: border-box; /* Pour inclure le padding dans la largeur */
+                            }
+
+
+                        }
+                    </style>
+
+
+                    {% if entretiens %}
+                        <div class="entretien-list">
+                            <h1> LISTE DES ENTRETIENS TERMINES </h1>
+                            {% for entretien in entretiens %}
+                                <div class="entretien-card">
+                                    <div class="card-header">
+                                        <h2>{{ entretien.candidature.nom }} <span class="for-job">pour le poste de {{ entretien.candidature.fiche.titre_poste }}</span></h2>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if entretien.candidature.noteEntretien > 0 %}
+
+
+                                                        <div><span class="primary"> NOTE :  {{entretien.candidature.noteEntretien}}</span></div>
+
+                                                        <div><a type="button" class="btn btn-primary " href="{% url 'recrutement:noterEntretien' entretien.candidature.id  entretien.candidature.fiche.id %}" > Renoter le Candidat </a></div>
+
+                                                </div>
+                                        {% elif entretien.candidature.noteEntretien == 0 %}
+                                               <div><a type="button" class="btn btn-primary " href="{% url 'recrutement:noterEntretien' entretien.candidature.id  entretien.candidature.fiche.id %}" > Noter le Candidat </a></div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% elif info %}
+                        <p class="no-entretiens">{{info}}</p>
+                    {% endif %}
+            </div>
+
+
+{% endblock %}
+
+  <!--  <a class="dropdown-item" href="{% url 'recrutement:noterCV' candidat.id fiche.id %}">Noter le candidat</a> -->

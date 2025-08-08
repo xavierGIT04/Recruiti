@@ -1,0 +1,57 @@
+{% extends 'recrutement/base.html' %}
+{% load static %}
+{% block header %}
+      <header class="app-header">
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Home</a></li>
+            <li class="breadcrumb-item active">Entretiens/</li>
+            <li class="breadcrumb-item active">nouvelle Entretien</li>
+          </ol>
+
+        </nav>
+      </header>
+{% endblock %}
+
+
+{% block content %}
+
+
+       <div class="container-fluid">
+
+         <form method="post">
+             {% csrf_token %}
+                <fieldset>
+                    <label>Titre de l'évènement: </label>
+                    {{ form.summary }}
+                    {{form.titre_poste.errors}}
+                    <br><br>
+
+                    <label>Date et Heure de Début: </label>
+                    {{ form.start_datetime }}
+                    {{form.start_datetime.errors}}
+                    <br><br>
+
+                     <label>Date et Heure de Fin: </label>
+                    {{ form.end_datetime  }}
+                    {{form.end_datetime.errors}}
+                    <br><br>
+
+                     <label>Description de l'évènement: </label>
+                    {{ form.description  }}
+                    {{form.description.errors}}
+                    <br><br>
+
+                </fieldset>
+             <input type="submit" value="Créer l'événement">
+        </form>
+
+       </div>
+
+
+
+
+
+{% endblock %}
+

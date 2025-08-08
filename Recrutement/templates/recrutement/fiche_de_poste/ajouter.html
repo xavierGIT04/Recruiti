@@ -1,0 +1,100 @@
+{% extends 'recrutement/base.html' %}
+
+{% block header %}
+      <header class="app-header">
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Home</a></li>
+            <li class="breadcrumb-item active">Fiche-Poste</li>
+            <li class="breadcrumb-item active">Ajout-Fiche-Poste</li>
+          </ol>
+
+        </nav>
+      </header>
+{% endblock %}
+
+
+{% block content %}
+
+
+       <div class="container-fluid">
+
+         <form action="{% url 'recrutement:mise_en_forme_fiche' %}" method="POST" novalidate>
+                {% csrf_token %}
+                <h1> AJOUT D'UNE FICHE DE POSTE</h1>
+                <fieldset>
+                    <legend>Informations générales</legend>
+                    <label>Titre du poste : </label>
+                    {{form.titre_poste}}
+                    {{form.titre_poste.errors}}
+                    <br><br>
+
+                    <label>Département :</label>
+                    {{form.departement}}
+                    {{form.departement.errors}}
+                    <br><br>
+
+                    <label>Lieu de travail :</label>
+                    {{form.lieu}}
+                    {{form.lieu.errors}}
+                    <br><br>
+
+                    <label>Type de contrat :</label>
+                    {{form.contrat}}
+                    {{form.contrat.errors}}
+                    <br><br>
+
+                    <label>Date de fin de dépot :</label>
+                    {{form.date_fin_postulation}}
+                    {{form.date_fin_postulation.errors}}
+                    <br><br>
+
+                </fieldset>
+
+
+
+                <fieldset>
+                    <legend>Missions et responsabilités</legend>
+                    <label>Missions :</label><br>
+                    {{form.missions}}
+                    {{form.missions.errors}}
+                    <br><br>
+
+                    <label>Objectifs :</label><br>
+                    {{form.objectifs}}
+                    {{form.objectifs.errors}}
+                    <br><br>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Profil recherché</legend>
+                    <label>Compétences techniques :</label><br>
+                    {{ form.competences_techniques}}
+                    {{ form.competences_techniques.errors}}
+                    <br><br>
+
+                    <label>Compétences transversales :</label><br>
+                    {{form.competences_transversales}}
+                    {{form.competences_transversales.errors}}
+                    <br><br>
+
+                    <label>Formation et expérience :</label><br>
+                    {{form.formation}}
+                    {{form.formation.errors}}
+                    <br><br>
+                </fieldset>
+
+
+                <input type="submit" value="Enregistrer">
+         </form>
+
+
+       </div>
+
+
+
+
+
+{% endblock %}
+

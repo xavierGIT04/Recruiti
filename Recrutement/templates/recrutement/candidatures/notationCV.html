@@ -1,0 +1,155 @@
+
+{% extends 'recrutement/base.html' %}
+
+{% block header %}
+      <header class="app-header">
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Home</a></li>
+            <li class="breadcrumb-item active">Notation</li>
+            <li class="breadcrumb-item active">CV</li>
+          </ol>
+
+        </nav>
+      </header>
+{% endblock %}
+
+
+{% block content %}
+
+
+       <div class="container-fluid">
+            <style>
+                body {
+                    font-family: sans-serif;
+                }
+
+                .fiche-notation {
+                    width: 100%;
+                    margin: 20px auto;
+                    border: 1px solid #ccc;
+                    padding: 20px;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                }
+
+                .section {
+                    margin-bottom: 20px;
+                    border-bottom: 1px solid #eee;
+                    padding-bottom: 15px;
+                }
+
+                .section:last-child {
+                    border-bottom: none;
+                }
+
+                .criterion {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 10px;
+                }
+
+                .criterion label {
+                    flex-grow: 1;
+                    margin-right: 10px;
+                }
+
+                .rating {
+                    display: flex;
+                    gap: 10px;
+                }
+
+                .rating input[type="radio"] {
+                    display: none; /* Cacher les boutons radio par défaut */
+                }
+
+                .rating label {
+                    border: 1px solid #ccc;
+                    padding: 5px 10px;
+                    cursor: pointer;
+                    border-radius: 5px;
+                }
+
+                .rating input[type="radio"]:checked + label {
+                    background-color: #007bff;
+                    color: white;
+                    border-color: #007bff;
+                }
+
+
+
+                .actions {
+                    margin-top: 20px;
+                    text-align: center;
+                }
+
+                .actions button {
+                    padding: 10px 20px;
+                    margin: 0 10px;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                }
+
+                .actions button.save {
+                    background-color: #28a745;
+                    color: white;
+                }
+
+                .actions button.cancel {
+                    background-color: #dc3545;
+                    color: white;
+                }
+            </style>
+
+            <form action="{% url 'recrutement:noterCV' id pk %}" method="POST" style="position:relative; top:20px;">
+        {% csrf_token %}
+        <div class="fiche-notation">
+            <h2>Notation du CV</h2>
+
+            <div class="section">
+                <h3>Expérience Professionnelle</h3>
+                <div class="criterion">
+                    <label >Pertinence avec le poste :</label>
+                    <div class="rating">
+                        <input type="radio" id="exp_pert_1" name="experience_pertinence" value="1"><label for="exp_pert_1">Non</label>
+                        <input type="radio" id="exp_pert_2" name="experience_pertinence" value="2"><label for="exp_pert_2">Pas-Assez-Pertinent</label>
+                        <input type="radio" id="exp_pert_3" name="experience_pertinence" value="3"><label for="exp_pert_3">Moyennement-Pertinent</label>
+                        <input type="radio" id="exp_pert_4" name="experience_pertinence" value="4"><label for="exp_pert_4">Pertinent</label>
+                        <input type="radio" id="exp_pert_5" name="experience_pertinence" value="5"><label for="exp_pert_5">Très-Pertinent</label>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="section">
+                <h3>Présentation du CV</h3>
+                <div class="criterion">
+                    <label>Clarté et organisation :</label>
+                    <div class="rating">
+                        <input type="radio" id="pres_clair_1" name="presentation_clarté" value="1"><label for="pres_clair_1">Passable</label>
+                        <input type="radio" id="pres_clair_2" name="presentation_clarté" value="2"><label for="pres_clair_2">Assez-Bien</label>
+                        <input type="radio" id="pres_clair_3" name="presentation_clarté" value="3"><label for="pres_clair_3">Bien</label>
+                        <input type="radio" id="pres_clair_4" name="presentation_clarté" value="4"><label for="pres_clair_4">Très-Bien</label>
+                        <input type="radio" id="pres_clair_5" name="presentation_clarté" value="5"><label for="pres_clair_5">Excellent</label>
+                    </div>
+                </div>
+            </div>
+            <div class="actions">
+                <a type="button" href="{% url 'recrutement:candidatures_par_fiche' pk %}" class="btn btn-primary">annuler</a>
+                <input type="submit" class="btn btn-success" value="Enregistrer la notation">
+                <a type="button" href="{% url 'recrutement:noterCV' id pk %}" class="btn btn-warning">réinitialiser</a>
+            </div>
+        </div>
+    </form>
+
+
+       </div>
+
+
+
+{% endblock %}
+
+
+

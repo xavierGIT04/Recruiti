@@ -1,0 +1,162 @@
+{% extends 'recrutement/base.html' %}
+{% load static %}
+
+{% block header %}
+      <header class="app-header">
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Home</a></li>
+            <li class="breadcrumb-item active">Candidatures</li>
+            <li class="breadcrumb-item active">N°{{ candidature.id }}</li>
+          </ol>
+
+        </nav>
+      </header>
+{% endblock %}
+
+{% block content %}
+        <style>
+body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .candidature-details {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .detail-section {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .detail-section:last-child {
+            border-bottom: none;
+        }
+
+        .detail-item {
+            display: grid;
+            grid-template-columns: 150px auto;
+            margin-bottom: 10px;
+        }
+
+        .detail-item strong {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .actions {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .actions a, .actions button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+        }
+
+        .actions a.back-link, .actions button.back-button {
+            background-color: #555;
+        }
+
+        .actions a.edit-link, .actions button.edit-button {
+            background-color: #007bff;
+        }
+
+        .actions button.delete-button {
+            background-color: #dc3545;
+        }
+
+        h2 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        </style>
+
+           <div class="container-fluid">
+                     <div class="slider-area ">
+                        <div class="single-slider section-overly slider-height2 d-flex align-items-center" data-background="{% static 'assets/img/hero/about.jpg' %}">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-xl-12">
+                                        <div class="hero-cap text-center">
+                                            <h2>  Candidature de Mr/(Mme) {{candidature.nom}} </h2>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="candidature-details">
+
+                            <div class="detail-section">
+                                <h3>Informations Générales</h3>
+                                <div class="detail-item">
+                                    <strong>Nom :</strong> <span id="nomCandidat">{{ candidature.nom }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Prénom :</strong> <span id="prenomCandidat">{{ candidature.prenom }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Email :</strong> <span id="emailCandidat">{{ candidature.mail }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Téléphone :</strong> <span id="telephoneCandidat">{{ candidature.telephone }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Date de Candidature :</strong> <span id="dateCandidature">{{ candidature.date_postulation }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Poste Souhaité :</strong> <span id="posteSouhaite">{{ candidature.fiche.titre_poste }}</span>
+                                </div>
+                            </div>
+
+
+                            <div class="detail-section">
+                                <h3>Notes et Évaluations</h3>
+                                <div class="detail-item">
+                                    <strong>Evaluation du CV :</strong> <span id="noteCV">{{ candidature.noteCV }} / 10</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Evaluation de l'Entretien :</strong> <span id="noteEntretien">{{ candidature.noteEntretien }} / 10</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Statut de la Candidature :</strong> <span id="statutCandidature">{{ candidature.statu }}</span>
+                                </div>
+                            </div>
+
+                            <div class="actions">
+                                <a href="{% url 'recrutement:candidatures_par_fiche' fiche.id %}" class="back-link"> Liste Candidatures </a>
+                                <a href="{% url 'recrutement:candidat_preselectionés' fiche.id %}" class="back-link"> Liste Préselectionnés </a>
+                                <a href="{% url 'recrutement:candidat_selectionés' fiche.id %}" class="back-link"> Liste Selectionnés </a>
+                            </div>
+                        </div>
+
+                                </div>
+                            </div>
+                        </div>
+                     </div>
+
+           </div>
+
+
+{% endblock %}
+

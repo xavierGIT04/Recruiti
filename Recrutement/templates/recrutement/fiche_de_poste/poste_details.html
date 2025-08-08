@@ -1,0 +1,116 @@
+{% extends 'recrutement/base.html' %}
+
+{% block header %}
+      <header class="app-header">
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Home</a></li>
+            <li class="breadcrumb-item active">Fiche-Poste</li>
+            <li class="breadcrumb-item active">Detail-Fiche-Poste</li>
+          </ol>
+
+        </nav>
+      </header>
+{% endblock %}
+
+
+{% block content %}
+
+
+       <div class="container-fluid">
+            <a class="btn btn-primary "  href="{% url 'recrutement:list_poste'  %}">Liste des Fiches</a>
+
+            <div class="row">
+                    <div class="col-xl-12">
+                        <div class="hero-cap text-center">
+                            <strong><h2>FICHE DE POSTE {{fiche.titre_poste}}</h2></strong>
+                        </div>
+                    </div>
+            </div>
+           <div class="job-post-company pt-120 pb-120">
+            <div class="container">
+                <div class="row justify-content-between">
+                    <!-- Left Content -->
+                    <div class="col-xl-7 col-lg-8">
+                        <!-- job single -->
+                        <div class="single-job-items mb-50">
+                            <div class="job-items">
+                                <div class="company-img company-img-details">
+                                    <a href="#"><img src="assets/images/icons/job-items.png" alt=""></a>
+                                </div>
+                                <div class="job-tittle">
+                                    <a href="#">
+                                        <h4>{{fiche.titre_poste}}</h4>
+                                    </a>
+                                    <ul>
+                                        <li>{{fiche.statu}}</li>
+                                        <li><i class="fas fa-map-marker-alt"></i>{{fiche.lieu}}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                          <!-- job single End -->
+
+                        <div class="job-post-details">
+                            <div class="post-details1 mb-50">
+                                <!-- Small Section Tittle -->
+                                <div class="small-section-tittle">
+                                    <h4> Description Du Poste </h4>
+                                </div>
+                                <p>{{ fiche.missions }}.</p>
+                            </div>
+                            <div class="post-details2  mb-50">
+                                 <!-- Small Section Tittle -->
+                                <div class="small-section-tittle">
+                                    <h4>Connaissances, compétences et aptitudes requises</h4>
+                                </div>
+                               <ul>
+                                   <li>{{fiche.competences_techniques}}</li>
+                                   <li>{{fiche.competences_transversales }}</li>
+                               </ul>
+                            </div>
+                            <div class="post-details2  mb-50">
+                                 <!-- Small Section Tittle -->
+                                <div class="small-section-tittle">
+                                    <h4>Education</h4>
+                                </div>
+                               <ul>
+                                   <li>{{fiche.formation}}</li>
+                               </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- Right Content -->
+                    <div class="col-xl-5 col-lg-5">
+                        <div class="post-details3  mb-50">
+                            <!-- Small Section Tittle -->
+                           <div class="small-section-tittle">
+                               <h4>Aperçu du poste</h4>
+                           </div>
+                          <ul>
+                              <li>Créé le : <span>{{fiche.date_creation}}</span></li>
+                              <li>Lieu : <span>{{fiche.lieu}}</span></li>
+                              <li>nature du contrat : <span>{{fiche.contrat}}</span></li>
+                              <li>fin des dépots : <span>{{fiche.date_fin_postulation}}</span></li>
+                          </ul>
+                             <div >
+                                 <a href="{% url 'recrutement:modifier_fiche' fiche.id %}" class="btn btn-primary ">Modifier</a>
+                                 <a class="btn btn-primary "  href="{{ fiche.pdf.url }}" download>Télécharger PDF</a>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+       </div>
+
+
+
+
+
+{% endblock %}
+

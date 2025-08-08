@@ -1,0 +1,92 @@
+{% extends 'recrutement/base.html' %}
+{% load static %}
+
+{% block header %}
+      <header class="app-header">
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Home</a></li>
+            <li class="breadcrumb-item active">Candidatures</li>
+            <li class="breadcrumb-item active">Fiche-Poste/{{ fiche.id }}</li>
+          </ol>
+
+        </nav>
+      </header>
+{% endblock %}
+
+{% block content %}
+
+            <a type="button" class="btn btn-primary " href="{% url 'recrutement:add_poste' %}" > Ajouter une fiche </a>
+           <div class="container-fluid">
+               <div class="row">
+                      <h1>Listes des Candidatures : fiche n°{{fiche.id}} portant Recrutement d'un(e) {{fiche.titre_poste}}</h1>
+               </div>
+               <div class="row" style="position: relative; top:20px">
+                   <div class="table-wrapper">
+                      {% if candidatures %}
+                        <table class="table table-striped table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Nom </th>
+                                    <th>Prenom</th>
+                                    <th>Email</th>
+                                    <th>Telephone</th>
+                                    <th>  CV </th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                             {% for candidat in candidatures %}
+                                <tr>
+                                    <td>{{ candidat.nom }}</td>
+                                    <td>{{ candidat.prenom }}</td>
+                                    <td>{{ candidat.mail }}</td>
+                                    <td>{{ candidat.telephone }}</td>
+                                    <td>
+                                         <a href="{{candidat.cv.url}}" class="view" title="Voir le cv" data-toggle="tooltip"><i class="material-icons">&#xE417;</i></a>
+
+                                    </td>
+                                    <td>
+                                        <div class="items-link items-link2 f-right">
+                                                    <div class="ms-auto">
+                                                                      <div class="dropdown">
+                                                                        <a href="javascript:void(0)" class="text-muted" id="year1-dropdown" data-bs-toggle="dropdown"
+                                                                          aria-expanded="false">
+                                                                          <i class="ti ti-dots fs-7"></i>
+                                                                        </a>
+                                                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="year1-dropdown">
+                                                                          <li>
+                                                                                <a class="dropdown-item" href="{% url 'recrutement:detailCandidature' candidat.id fiche.id %}">detail</a>
+                                                                          </li>
+                                                                          <li>
+                                                                                <a class="dropdown-item" href="{% url 'recrutement:noterCV' candidat.id fiche.id %}">Noter le CV</a>
+                                                                          </li>
+                                                                        </ul>
+                                                                      </div>
+                                                    </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                             {% endfor %}
+                            </tbody>
+                        </table>
+                      {% else %}
+                                  <div class="card col-lg-11 text-center container">
+                                        <div class="card-body">
+                                          <h1>AUCUNES CANDIDATURES</h1>
+                                        </div>
+                                  </div>
+                      {% endif %}
+                    </div>
+               </div>
+
+           </div>
+
+
+
+
+
+{% endblock %}
+
+  <!--  <a class="dropdown-item" href="{% url 'recrutement:noterCV' candidat.id fiche.id %}">Noter le candidat</a> -->

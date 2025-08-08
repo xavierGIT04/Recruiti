@@ -1,0 +1,100 @@
+
+{% extends 'recrutement/base.html' %}
+{% load static %}
+
+{% block header %}
+      <header class="app-header">
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Home</a></li>
+            <li class="breadcrumb-item active">Candidatures-preselectionees</li>
+          </ol>
+
+        </nav>
+      </header>
+{% endblock %}
+
+{% block content %}
+
+           <div class="container-fluid">
+                <div class="slider-area ">
+                    <div class="single-slider section-overly slider-height2 d-flex align-items-center" data-background="{% static 'assets/img/hero/about.jpg' %}">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="hero-cap text-center">
+                                        <h2> Candidatures Présélectionées pour le Recrutement d'un(e) {{fiche.titre_poste}} </h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="position: relative; top:20px">
+                                <div class="table-wrapper">
+                          {% if candidats %}
+                            <table class="table table-striped table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Nom </th>
+                                        <th>Prenom</th>
+                                        <th>Email</th>
+                                        <th>Telephone</th>
+                                        <th>  CV </th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                 {% for candidat in candidats %}
+                                    <tr>
+                                        <td>{{ candidat.nom }}</td>
+                                        <td>{{ candidat.prenom }}</td>
+                                        <td>{{ candidat.mail }}</td>
+                                        <td>{{ candidat.telephone }}</td>
+                                        <td>
+                                             <a href="{{candidat.cv.url}}" class="view" title="Voir le cv" data-toggle="tooltip"><i class="material-icons">&#xE417;</i></a>
+
+                                        </td>
+                                        <td>
+                                                    <div class="items-link items-link2 f-right">
+                                                                    <div class="ms-auto">
+                                                                              <div class="dropdown">
+                                                                                <a href="javascript:void(0)" class="text-muted" id="year1-dropdown" data-bs-toggle="dropdown"
+                                                                                  aria-expanded="false">
+                                                                                  <i class="ti ti-dots fs-7"></i>
+                                                                                </a>
+                                                                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="year1-dropdown">
+                                                                                  <li>
+                                                                                        <a class="dropdown-item" href="{% url 'recrutement:detailCandidature' candidat.id fiche.id %}">detail</a>
+                                                                                  </li>
+                                                                                  <li>
+                                                                                        <a class="dropdown-item" href="{% url 'recrutement:entretien' candidat.id fiche.id %}">Planifier un entretien</a>
+                                                                                  </li>
+                                                                                </ul>
+                                                                              </div>
+                                                                    </div>
+
+                                                    </div>
+                                        </td>
+
+                                    </tr>
+                                 {% endfor %}
+                                </tbody>
+                            </table>
+                          {% else %}
+                            <div class="card col-lg-11 text-center container">
+                                            <div class="card-body">
+                                              <h1>Cette fiche n'a pas de candidats présélectionés !!!</h1>
+                                            </div>
+                                      </div>
+                          {% endif  %}
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+           </div>
+
+
+{% endblock %}
+
+
+
