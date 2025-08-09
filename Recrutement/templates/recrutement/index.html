@@ -18,9 +18,9 @@
 
            <div class="container-fluid">
                <h1> LISTE DES POSTES  </h1>
-               <a type="button" class="btn btn-primary " href="{% url 'recrutement:add_poste' %}" > Ajouter une fiche </a>
-
                     {% if fiches %}
+                                  <a type="button" class="btn btn-primary " href="{% url 'recrutement:add_poste' %}" > Ajouter une fiche </a>
+
                                         {% for fiche in fiches %}
 
                                             <div class="single-job-items mb-30">

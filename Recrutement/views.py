@@ -1,6 +1,6 @@
 import datetime
 import os
-os.add_dll_directory("C:/GTK/bin")
+
 
 from django.core.files.base import ContentFile
 from django.http import HttpResponse

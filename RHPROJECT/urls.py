@@ -30,7 +30,7 @@ def index(request):
     if fiches:
         context = {'fiches': FichePoste.objects.filter(statu="publier")}
     else:
-        context = {'info': "liste vide"}
+        context = {'info': "AUCUNE FICHE DE POSTE"}
     return render(request, 'index.html', context)
 
 
