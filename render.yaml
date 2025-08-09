@@ -1,0 +1,27 @@
+
+services:
+  - type: web
+    name: handres-web
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn RHPROJECT.wsgi:application
+    region: oregon
+    plan: free
+    runtime: python
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: handres-db
+          property: connectionString
+      - key: SECRET_KEY
+        value: 'django-insecure-0u#+*l^oct#prva59fd28cyvxfl)40f5l=g@+cx#vhu83ofy8l'
+      - key: DEBUG
+        value: 'False'
+
+databases:
+  - name: handres-db
+    plan: free
+    region: oregon
+    databaseName: handresDB
+    user: gbandi
