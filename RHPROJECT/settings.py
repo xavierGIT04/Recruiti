@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'RHPROJECT.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
+    'default': dj_database_url.config(default=os.getenv("postgresql://gbandi:vlTA4OJCMXIwZvGDSnCHVLpSf1zJr5Qw@dpg-d2bks33uibrs73fn6bc0-a/handresdb"))
 }
 
 
