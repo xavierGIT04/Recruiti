@@ -4,7 +4,7 @@ from docutils.nodes import status
 import uuid
 from django.conf import settings
 from django.utils import timezone
-
+from cloudinary_storage.storage import RawMediaCloudinaryStorage
 
 
 # Create your models here.
@@ -29,7 +29,7 @@ class FichePoste(models.Model):
     competences_techniques = models.TextField()
     competences_transversales = models.TextField()
     formation = models.TextField()
-    pdf = models.FileField(upload_to='fiche_poste/', null=True, blank=True)
+    pdf = models.FileField(upload_to='fiche_poste/', null=True, blank=True, storage=RawMediaCloudinaryStorage())
 
     def __str__(self):
         return f"{self.titre_poste}-{self.auteur}-{self.date_creation}"
@@ -71,7 +71,7 @@ class Candidature(models.Model):
     mail = models.EmailField()
     telephone = models.CharField(max_length=10)
     date_postulation = models.DateField()
-    cv = models.FileField(upload_to="candidatures/", null=False, blank=False)
+    cv = models.FileField(upload_to="candidatures/", null=False, blank=False, storage=RawMediaCloudinaryStorage())
     fiche = models.ForeignKey(FichePoste, on_delete=models.CASCADE)
     noteCV = models.IntegerField(null=True, default=0)
     noteEntretien = models.IntegerField(null=True, default=0)
