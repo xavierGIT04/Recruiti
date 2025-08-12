@@ -51,4 +51,4 @@ urlpatterns = [
     path('recrutement/', include("Recrutement.urls", namespace="recrutement")),
 
 ]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
