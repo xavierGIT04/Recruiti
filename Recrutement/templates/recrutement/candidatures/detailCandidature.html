@@ -1,0 +1,76 @@
+{% extends 'recrutement/base.html' %}
+{% load static %}
+
+{% block header %}
+<header class="app-header">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Tableau de bord</a></li>
+            <li class="breadcrumb-item active">Candidatures</li>
+            <li class="breadcrumb-item active">Détails du candidat n°{{ candidature.id }}</li>
+        </ol>
+    </nav>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4">Candidature de **{{ candidature.nom }} {{ candidature.prenom }}**</h2>
+            <hr>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <h3 class="h5 text-primary mb-3">Informations Générales</h3>
+                    <div class="mb-2">
+                        <strong>Nom :</strong> <span class="text-muted">{{ candidature.nom }}</span>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Prénom :</strong> <span class="text-muted">{{ candidature.prenom }}</span>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Email :</strong> <span class="text-muted">{{ candidature.mail }}</span>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Téléphone :</strong> <span class="text-muted">{{ candidature.telephone }}</span>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Date de Candidature :</strong> <span class="text-muted">{{ candidature.date_postulation|date:"d F Y" }}</span>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Poste Souhaité :</strong> <span class="text-muted">{{ candidature.fiche.titre_poste }}</span>
+                    </div>
+                    <div class="mb-2">
+                        <strong>CV :</strong> <a href="{{ candidature.cv.url }}" target="_blank" class="text-primary"><i class="fas fa-file-pdf me-1"></i>Voir le CV</a>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <h3 class="h5 text-primary mb-3">Notes et Évaluations</h3>
+                    <div class="mb-2">
+                        <strong>Évaluation du CV :</strong>
+                        <span class="badge bg-primary">{{ candidature.noteCV }} / 10</span>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Évaluation de l'Entretien :</strong>
+                        <span class="badge bg-primary">{{ candidature.noteEntretien }} / 10</span>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Statut de la Candidature :</strong>
+                        <span class="badge bg-secondary">{{ candidature.statu }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="mt-4">
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                <a href="{% url 'recrutement:candidatures_par_fiche' fiche.id %}" class="btn btn-outline-secondary">Liste Candidatures</a>
+                <a href="{% url 'recrutement:candidat_preselectionés' fiche.id %}" class="btn btn-outline-info">Liste Présélectionnés</a>
+                <a href="{% url 'recrutement:candidat_selectionés' fiche.id %}" class="btn btn-outline-success">Liste Sélectionnés</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'recrutement/base.html' %}
+{% load static %}
+
+{% block header %}
+<header class="app-header">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Tableau de bord</a></li>
+            <li class="breadcrumb-item active">Entretiens programmés</li>
+        </ol>
+    </nav>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="text-center mb-4">Liste des entretiens au programme</h1>
+    <hr>
+
+    {% if entretiens %}
+    <div class="row row-cols-1 g-4">
+        {% for entretien in entretiens %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-primary">{{ entretien.candidature.nom }} {{ entretien.candidature.prenom }}</h5>
+                    <p class="card-subtitle mb-2 text-muted">
+                        Pour le poste de **{{ entretien.candidature.fiche.titre_poste }}**
+                    </p>
+                    <hr>
+                    <p class="card-text fw-bold">
+                        🗓️ Le {{ entretien.start_datetime|date:"d F Y" }}
+                        <br>
+                        🕒 À {{ entretien.start_datetime|time:"H:i" }}
+                    </p>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto">
+                        <a href="{{ entretien.meeting_link }}" target="_blank" class="btn btn-success">
+                            <i class="ti ti-video-plus me-2"></i>Rejoindre
+                        </a>
+                        <a href="{% url 'recrutement:marquer_comme_terminer' entretien.id %}" class="btn btn-primary">
+                            <i class="ti ti-check me-2"></i>Terminer
+                        </a>
+                        <a href="{% url 'recrutement:annuler_entretien' entretien.id %}" class="btn btn-danger">
+                            <i class="ti ti-x me-2"></i>Annuler
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% elif info %}
+    <div class="alert alert-info text-center mt-5" role="alert">
+        <h4 class="alert-heading">{{ info }}</h4>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

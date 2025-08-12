@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+{% load static %}
+{% load widget_tweaks %}
+<html lang="fr-FR">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Postuler</title>
+        <meta name="description" content="Déposer votre candidature pour un poste.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="manifest" href="site.webmanifest">
+        <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}">
+
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'assets/css/fiche_poste.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/owl.carousel.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/flaticon.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/price_rangs.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/slicknav.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/animate.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/magnific-popup.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/fontawesome-all.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/themify-icons.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/slick.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/nice-select.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    </head>
+
+    <body>
+        <div id="preloader-active">
+            <div class="preloader d-flex align-items-center justify-content-center">
+                <div class="preloader-inner position-relative">
+                    <div class="preloader-circle"></div>
+                    <div class="preloader-img pere-text">
+                        <img src="{% static 'assets/img/logo/logo.svg' %}" alt="Logo">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <header>
+            <div class="header-area header-transparrent">
+                <div class="headder-top header-sticky">
+                    <div class="container">
+                        <div class="row align-items-center justify-content-between">
+                            <div class="col-lg-3 col-md-2">
+                                <div class="logo">
+                                    <a href="{% url 'index' %}"><img src="{% static 'assets/img/logo/logo.svg' %}" alt="Logo"></a>
+                                </div>
+                            </div>
+                            <div class="col-lg-9 col-md-9">
+                                <div class="menu-wrapper d-flex justify-content-end align-items-center">
+                                    <div class="header-btn d-none d-lg-block">
+                                        <a href="{% url 'users:connecter' %}" class="btn head-btn2">Se Connecter</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main class="bg-gray-100 min-h-screen py-16">
+            <section class="container mx-auto px-4">
+                <div class="max-w-3xl mx-auto bg-white p-8 md:p-12 rounded-lg shadow-xl">
+                    <div class="text-center mb-8">
+                        <h2 class="text-4xl font-bold text-gray-800 mb-2">Candidater</h2>
+                        <p class="text-gray-500">Remplissez ce formulaire pour postuler au poste.</p>
+                    </div>
+                    <form method="POST" enctype="multipart/form-data" action="{% url 'recrutement:traiter_candidature' %}">
+                        {% csrf_token %}
+                        <div class="grid md:grid-cols-2 md:gap-6">
+                            <div class="relative z-0 w-full mb-6 group">
+                                <label for="{{ form.nom.id_for_label }}" class="block text-sm font-medium text-gray-700">Nom</label>
+                                {% render_field form.nom class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Votre nom" %}
+                            </div>
+                            <div class="relative z-0 w-full mb-6 group">
+                                <label for="{{ form.prenom.id_for_label }}" class="block text-sm font-medium text-gray-700">Prénom</label>
+                                {% render_field form.prenom class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Votre prénom" %}
+                            </div>
+                        </div>
+                        <div class="relative z-0 w-full mb-6 group">
+                            <label for="{{ form.mail.id_for_label }}" class="block text-sm font-medium text-gray-700">Email</label>
+                            {% render_field form.mail class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="exemple@mail.com" %}
+                        </div>
+                        <div class="relative z-0 w-full mb-6 group">
+                            <label for="{{ form.telephone.id_for_label }}" class="block text-sm font-medium text-gray-700">Numéro de téléphone</label>
+                            {% render_field form.telephone class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Ex: +228 90 00 00 00" %}
+                        </div>
+                        <div class="relative z-0 w-full mb-6 group">
+                            <label for="{{ form.cv.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                                Déposez votre CV
+                                <span class="text-xs text-gray-500">(Formats acceptés : PDF, DOC, DOCX)</span>
+                            </label>
+                            {% render_field form.cv class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" %}
+                        </div>
+
+                        <input type="hidden" name="fiche" value="{{ fiche.id }}">
+
+                        <button class="w-full py-3 mt-6 bg-blue-600 text-white font-bold text-lg rounded-md shadow-lg hover:bg-blue-700 transition duration-300" type="submit">
+                            Soumettre ma candidature
+                        </button>
+                    </form>
+                </div>
+            </section>
+            </main>
+
+        <footer>
+            <div class="footer-bottom-area footer-bg">
+                <div class="container">
+                    <div class="footer-border">
+                        <div class="row d-flex justify-content-between align-items-center">
+                            <div class="col-xl-10 col-lg-10">
+                                <div class="footer-copy-right">
+                                    <p>
+                                        Copyright &copy;<script>document.write(new Date().getFullYear());</script> HANDRES
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-lg-2">
+                                <div class="footer-social f-right">
+                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                    <a href="#"><i class="fas fa-globe"></i></a>
+                                    <a href="#"><i class="fab fa-behance"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <script src="{% static 'assets/js/vendor/modernizr-3.5.0.min.js' %}"></script>
+        <script src="{% static 'assets/js/vendor/jquery-1.12.4.min.js' %}"></script>
+        <script src="{% static 'assets/js/popper.min.js' %}"></script>
+        <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.slicknav.min.js' %}"></script>
+        <script src="{% static 'assets/js/owl.carousel.min.js' %}"></script>
+        <script src="{% static 'assets/js/slick.min.js' %}"></script>
+        <script src="{% static 'assets/js/price_rangs.js' %}"></script>
+        <script src="{% static 'assets/js/wow.min.js' %}"></script>
+        <script src="{% static 'assets/js/animated.headline.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.magnific-popup.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.scrollUp.min.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.nice-select.min.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.sticky.js' %}"></script>
+        <script src="{% static 'assets/js/contact.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.form.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.validate.min.js' %}"></script>
+        <script src="{% static 'assets/js/mail-script.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.ajaxchimp.min.js' %}"></script>
+        <script src="{% static 'assets/js/plugins.js' %}"></script>
+        <script src="{% static 'assets/js/main.js' %}"></script>
+    </body>
+</html>

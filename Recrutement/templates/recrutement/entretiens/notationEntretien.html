@@ -1,0 +1,93 @@
+{% extends 'recrutement/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block header %}
+<header class="app-header">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Tableau de bord</a></li>
+            <li class="breadcrumb-item active">Notation</li>
+            <li class="breadcrumb-item active">Entretien</li>
+        </ol>
+    </nav>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="card-title text-center mb-4">Notation de l'entretien</h1>
+            <p class="text-center text-muted">Veuillez évaluer les critères suivants pour le candidat.</p>
+
+            <form action="{% url 'recrutement:noterEntretien' id pk %}" method="POST" class="mt-4">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <fieldset class="mb-4 p-4 border rounded">
+                            <legend class="h5 mb-3 text-primary">Communication</legend>
+                            <div class="mb-3">
+                                <label class="form-label">Clarté et concision</label>
+                                <div class="btn-group w-100" role="group" aria-label="Clarté et concision">
+                                    <input type="radio" class="btn-check" id="comm_claire_1" name="communication_claire" value="1">
+                                    <label class="btn btn-outline-secondary" for="comm_claire_1">Bon</label>
+
+                                    <input type="radio" class="btn-check" id="comm_claire_2" name="communication_claire" value="2">
+                                    <label class="btn btn-outline-secondary" for="comm_claire_2">Très bon</label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Capacité d'écoute</label>
+                                <div class="btn-group w-100" role="group" aria-label="Capacité d'écoute">
+                                    <input type="radio" class="btn-check" id="comm_ecoute_1" name="communication_ecoute" value="1">
+                                    <label class="btn btn-outline-secondary" for="comm_ecoute_1">Insuffisant</label>
+
+                                    <input type="radio" class="btn-check" id="comm_ecoute_2" name="communication_ecoute" value="2">
+                                    <label class="btn btn-outline-secondary" for="comm_ecoute_2">Satisfaisant</label>
+
+                                    <input type="radio" class="btn-check" id="comm_ecoute_3" name="communication_ecoute" value="3">
+                                    <label class="btn btn-outline-secondary" for="comm_ecoute_3">Très satisfaisant</label>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="mb-4 p-4 border rounded">
+                            <legend class="h5 mb-3 text-primary">Motivation et Intérêt</legend>
+                            <div class="mb-3">
+                                <label class="form-label">Motivation pour le poste</label>
+                                <div class="btn-group w-100" role="group" aria-label="Motivation pour le poste">
+                                    <input type="radio" class="btn-check" id="mot_poste_1" name="motivation_poste" value="1">
+                                    <label class="btn btn-outline-secondary" for="mot_poste_1">Bon</label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Intérêt pour l'entreprise</label>
+                                <div class="btn-group w-100" role="group" aria-label="Intérêt pour l'entreprise">
+                                    <input type="radio" class="btn-check" id="mot_entrep_1" name="motivation_entreprise" value="1">
+                                    <label class="btn btn-outline-secondary" for="mot_entrep_1">Faible</label>
+
+                                    <input type="radio" class="btn-check" id="mot_entrep_2" name="motivation_entreprise" value="2">
+                                    <label class="btn btn-outline-secondary" for="mot_entrep_2">Satisfaisant</label>
+
+                                    <input type="radio" class="btn-check" id="mot_entrep_3" name="motivation_entreprise" value="3">
+                                    <label class="btn btn-outline-secondary" for="mot_entrep_3">Assez satisfaisant</label>
+
+                                    <input type="radio" class="btn-check" id="mot_entrep_4" name="motivation_entreprise" value="4">
+                                    <label class="btn btn-outline-secondary" for="mot_entrep_4">Très satisfaisant</label>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="d-flex justify-content-center gap-3 mt-4">
+                            <a href="{% url 'recrutement:candidat_selectionés' pk %}" class="btn btn-outline-secondary">Annuler</a>
+                            <button type="reset" class="btn btn-outline-warning">Réinitialiser</button>
+                            <button type="submit" class="btn btn-success">Enregistrer la notation</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

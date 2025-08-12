@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offre d'emploi : {{fiche.poste}}</title>
+    <link rel="stylesheet" href="{% static 'assets/css/pdf_fiche.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+
+</head>
+</head>
+<body>
+    <div id="job-listing">
+        <header>
+            <h1>Titre du Poste : {{ fiche.titre_poste }}</h1>
+            <p class="department"> Département :  {{ fiche.departement }}</p>
+            <p class="location">  Lieu de Travil : {{ fiche.lieu }}</p>
+            <p class="tasks">  Type de contrat : {{ fiche.contrat }} </p>
+        </header>
+
+        <section class="job-details">
+            <h2>Objectifs</h2>
+            <div class="tasks">
+                <p> {{fiche.objectifs}} </p>
+            </div>
+
+            <h2>Missions</h2>
+            <div class="tasks">
+                <p> {{fiche.missions}}</p>
+            </div>
+
+            <h2>Profil recherché</h2>
+            <div class="skills">
+                <p><i class="fas fa-check-circle"></i> {{ fiche.competences_techniques }}</p>
+                <p><i class="fas fa-check-circle"></i> {{fiche.competences_transversales}}</p>
+                <p><i class="fas fa-check-circle"></i> {{fiche.formation}}</p>
+            </div>
+
+        </section>
+
+        <div>
+            <span>Postuler via l'interface cette interface:  </span>
+        </div>
+    </div>
+
+</body>
+</html>

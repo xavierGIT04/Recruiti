@@ -1,0 +1,55 @@
+{% extends 'recrutement/base.html' %}
+{% load static %}
+
+{% block header %}
+<header class="app-header">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Tableau de bord</a></li>
+            <li class="breadcrumb-item active">Fiches à publier</li>
+        </ol>
+    </nav>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">Poste à publier</h1>
+
+    {% if fiches %}
+    <div class="row g-4">
+        {% for fiche in fiches %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="{% static 'assets/images/icons/job-items.png' %}" alt="Job icon" class="me-3" style="width: 50px;">
+                        <div>
+                            <h5 class="card-title mb-1">
+                                <a href="{% url 'recrutement:detail_poste' fiche.id %}" class="text-primary">{{ fiche.titre_poste }}</a>
+                            </h5>
+                            <p class="card-text mb-1">
+                                Statu actuel :
+                                <span class="badge bg-secondary">{{ fiche.statu }}</span>
+                            </p>
+                            <p class="card-text text-muted mb-0">
+                                <i class="fas fa-map-marker-alt me-1"></i>{{ fiche.lieu }} &bull; Horaire: 8H/jours
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-auto text-end">
+                        <a type="button" class="btn btn-success" href="{% url 'recrutement:publier' fiche.id %}">Publier</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center mt-5" role="alert">
+        <h4 class="alert-heading">Aucune fiche à publier.</h4>
+        <p>Toutes les fiches de poste non-publiées ont déjà été archivées ou sont en cours de création.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

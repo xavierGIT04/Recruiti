@@ -1,0 +1,64 @@
+{% extends 'recrutement/base.html' %}
+{% load static %}
+
+{% block header %}
+<header class="app-header">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Tableau de bord</a></li>
+            <li class="breadcrumb-item active">Candidatures définitives</li>
+        </ol>
+    </nav>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            {% if candidats %}
+            <h2 class="card-title text-center mb-4">Candidatures définitives pour le poste de **{{ fiche.titre_poste }}**</h2>
+            <hr>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-primary">
+                        <tr>
+                            <th scope="col">Nom</th>
+                            <th scope="col">Prénom</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Téléphone</th>
+                            <th scope="col">CV</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for candidat in candidats %}
+                        <tr>
+                            <td>{{ candidat.nom }}</td>
+                            <td>{{ candidat.prenom }}</td>
+                            <td>{{ candidat.mail }}</td>
+                            <td>{{ candidat.telephone }}</td>
+                            <td>
+                                <a href="{{ candidat.cv.url }}" target="_blank" class="text-primary" title="Voir le CV">
+                                    <i class="fas fa-file-pdf"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{% url 'recrutement:detailCandidature' candidat.id fiche.id %}" class="btn btn-sm btn-outline-info">Détails</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info text-center mt-5" role="alert">
+                <h4 class="alert-heading">Aucun candidat sélectionné !</h4>
+                <p>Ce poste n'a pas de candidatures sélectionnées de manière définitive.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

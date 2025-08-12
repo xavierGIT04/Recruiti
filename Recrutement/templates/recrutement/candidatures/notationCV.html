@@ -1,0 +1,85 @@
+{% extends 'recrutement/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block header %}
+<header class="app-header">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Tableau de bord</a></li>
+            <li class="breadcrumb-item active">Notation</li>
+            <li class="breadcrumb-item active">CV</li>
+        </ol>
+    </nav>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="card-title text-center mb-4">Notation du CV</h1>
+            <p class="text-center text-muted">Veuillez évaluer le CV du candidat sur les critères suivants.</p>
+
+            <form action="{% url 'recrutement:noterCV' id pk %}" method="POST" class="mt-4">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <fieldset class="mb-4 p-4 border rounded">
+                            <legend class="h5 mb-3 text-primary">Expérience Professionnelle</legend>
+                            <div class="mb-3">
+                                <label class="form-label">Pertinence avec le poste</label>
+                                <div class="btn-group w-100" role="group" aria-label="Pertinence avec le poste">
+                                    <input type="radio" class="btn-check" id="exp_pert_1" name="experience_pertinence" value="1">
+                                    <label class="btn btn-outline-secondary" for="exp_pert_1">Faible</label>
+
+                                    <input type="radio" class="btn-check" id="exp_pert_2" name="experience_pertinence" value="2">
+                                    <label class="btn btn-outline-secondary" for="exp_pert_2">Moyenne</label>
+
+                                    <input type="radio" class="btn-check" id="exp_pert_3" name="experience_pertinence" value="3">
+                                    <label class="btn btn-outline-secondary" for="exp_pert_3">Assez pertinente</label>
+
+                                    <input type="radio" class="btn-check" id="exp_pert_4" name="experience_pertinence" value="4">
+                                    <label class="btn btn-outline-secondary" for="exp_pert_4">Pertinente</label>
+
+                                    <input type="radio" class="btn-check" id="exp_pert_5" name="experience_pertinence" value="5">
+                                    <label class="btn btn-outline-secondary" for="exp_pert_5">Très pertinente</label>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="mb-4 p-4 border rounded">
+                            <legend class="h5 mb-3 text-primary">Présentation du CV</legend>
+                            <div class="mb-3">
+                                <label class="form-label">Clarté et organisation</label>
+                                <div class="btn-group w-100" role="group" aria-label="Clarté et organisation">
+                                    <input type="radio" class="btn-check" id="pres_clair_1" name="presentation_clarté" value="1">
+                                    <label class="btn btn-outline-secondary" for="pres_clair_1">Passable</label>
+
+                                    <input type="radio" class="btn-check" id="pres_clair_2" name="presentation_clarté" value="2">
+                                    <label class="btn btn-outline-secondary" for="pres_clair_2">Assez bien</label>
+
+                                    <input type="radio" class="btn-check" id="pres_clair_3" name="presentation_clarté" value="3">
+                                    <label class="btn btn-outline-secondary" for="pres_clair_3">Bien</label>
+
+                                    <input type="radio" class="btn-check" id="pres_clair_4" name="presentation_clarté" value="4">
+                                    <label class="btn btn-outline-secondary" for="pres_clair_4">Très bien</label>
+
+                                    <input type="radio" class="btn-check" id="pres_clair_5" name="presentation_clarté" value="5">
+                                    <label class="btn btn-outline-secondary" for="pres_clair_5">Excellent</label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <a href="{% url 'recrutement:candidatures_par_fiche' pk %}" class="btn btn-outline-secondary">Annuler</a>
+                    <button type="reset" class="btn btn-outline-warning">Réinitialiser</button>
+                    <button type="submit" class="btn btn-success">Enregistrer la notation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

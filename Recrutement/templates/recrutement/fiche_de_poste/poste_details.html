@@ -1,0 +1,84 @@
+{% extends 'recrutement/base.html' %}
+{% load static %}
+
+{% block header %}
+<header class="app-header">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Tableau de bord</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:list_poste' %}">Fiches de poste</a></li>
+            <li class="breadcrumb-item active">{{ fiche.titre_poste }}</li>
+        </ol>
+    </nav>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Détails de la fiche de poste</h1>
+        <a class="btn btn-outline-secondary" href="{% url 'recrutement:list_poste' %}">
+            <i class="ti ti-arrow-left me-2"></i>Liste des fiches
+        </a>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4">{{ fiche.titre_poste }}</h2>
+            <div class="row">
+                <div class="col-lg-8">
+                    <section class="mb-4">
+                        <h3 class="h5 text-primary mb-3">Description du poste</h3>
+                        <p>{{ fiche.missions|safe }}</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h3 class="h5 text-primary mb-3">Compétences requises</h3>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <h6>Compétences techniques</h6>
+                                <p>{{ fiche.competences_techniques }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <h6>Compétences transversales</h6>
+                                <p>{{ fiche.competences_transversales }}</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-4">
+                        <h3 class="h5 text-primary mb-3">Formation</h3>
+                        <p>{{ fiche.formation }}</p>
+                    </section>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="card bg-light h-100">
+                        <div class="card-body">
+                            <h3 class="h5 mb-3">Aperçu du poste</h3>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><strong>Statut :</strong> <span class="badge {% if fiche.statu == 'publier' %}bg-success{% else %}bg-secondary{% endif %}">{{ fiche.statu }}</span></li>
+                                <li class="mb-2"><strong>Créé le :</strong> {{ fiche.date_creation|date:"d F Y" }}</li>
+                                <li class="mb-2"><strong>Lieu :</strong> {{ fiche.lieu }}</li>
+                                <li class="mb-2"><strong>Contrat :</strong> {{ fiche.contrat }}</li>
+                                <li class="mb-2"><strong>Fin des dépôts :</strong> {{ fiche.date_fin_postulation|date:"d F Y" }}</li>
+                            </ul>
+
+                            <hr class="my-3">
+
+                            <div class="d-flex flex-column gap-2">
+                                <a href="{% url 'recrutement:modifier_fiche' fiche.id %}" class="btn btn-primary">
+                                    <i class="ti ti-edit me-2"></i>Modifier la fiche
+                                </a>
+                                <a href="{{ fiche.pdf.url }}" download class="btn btn-outline-primary">
+                                    <i class="ti ti-download me-2"></i>Télécharger le PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

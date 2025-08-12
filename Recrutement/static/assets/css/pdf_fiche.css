@@ -1,0 +1,68 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+#job-listing {
+    max-width: 700px;
+    margin: 20px auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+header {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+header img.logo {
+    max-width: 150px;
+    height: auto;
+    display: block;
+    margin: 0 auto 10px;
+}
+
+header h1 {
+    font-size: 2em;
+    margin-bottom: 5px;
+}
+
+header p {
+    margin: 5px 0;
+}
+
+.job-details {
+    padding: 20px;
+}
+
+section h2 {
+    color: #3498db;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.tasks, .skills, .benefits {
+    list-style: none;
+    padding: 0;
+}
+
+.tasks li, .skills li, .benefits li {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.tasks i, .skills i, .benefits i {
+    margin-right: 10px;
+    color: #3498db;
+}
+
+
+}

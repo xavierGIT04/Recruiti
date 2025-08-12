@@ -1,0 +1,92 @@
+{% extends 'recrutement/base.html' %}
+{% load static %}
+
+{% block header %}
+<header class="app-header">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'recrutement:index' %}">Tableau de bord</a></li>
+            <li class="breadcrumb-item active">Liste des postes</li>
+        </ol>
+    </nav>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Liste des postes</h1>
+        <a class="btn btn-primary" href="{% url 'recrutement:add_poste' %}">
+            <i class="ti ti-plus me-2"></i>Ajouter une fiche
+        </a>
+    </div>
+
+    {% if fiches %}
+    <div class="row g-4">
+        {% for fiche in fiches %}
+        <div class="col-12">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <img src="{% static 'assets/images/icons/job-items.png' %}" alt="Job icon" class="me-3" style="width: 50px;">
+                        <div>
+                            <h5 class="card-title mb-1">
+                                <a href="{% url 'recrutement:detail_poste' fiche.id %}" class="text-primary">{{ fiche.titre_poste }}</a>
+                            </h5>
+                            <p class="card-text text-muted mb-1">
+                                Statu actuel :
+                                <span class="badge {% if fiche.statu == 'publier' %}bg-success{% else %}bg-danger{% endif %}">{{ fiche.statu }}</span>
+                            </p>
+                            <p class="card-text text-muted mb-0">
+                                <i class="fas fa-map-marker-alt me-1"></i>{{ fiche.lieu }} &bull; Horaire: 8H/jours
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="ms-auto d-flex align-items-center">
+                        <a href="{% url 'recrutement:candidatures_par_fiche' fiche.id %}" class="btn btn-outline-secondary me-3">
+                            Candidatures (<span class="badge bg-primary rounded-pill">{{ fiche.nbreCandidatures }}</span>)
+                        </a>
+
+                        <div class="dropdown">
+                            <a href="#" class="text-muted" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="ti ti-dots fs-5"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'recrutement:detail_poste' fiche.id %}">Consulter</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'recrutement:modifier_fiche' fiche.id %}">Modifier</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    {% if fiche.statu == "publier" %}
+                                    <a class="dropdown-item text-danger" href="{% url 'recrutement:depublier' fiche.id %}">Dépublier</a>
+                                    {% elif fiche.statu == "nonpublier" %}
+                                    <a class="dropdown-item text-success" href="{% url 'recrutement:publier' fiche.id %}">Publier</a>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card text-center my-5">
+        <div class="card-body p-5">
+            <h2 class="card-title mb-4">Aucun poste disponible</h2>
+            <p class="card-text mb-4">Cliquez sur le bouton ci-dessous pour ajouter une fiche de poste.</p>
+            <a class="btn btn-primary" href="{% url 'recrutement:add_poste' %}">
+                <i class="ti ti-plus me-2"></i>Cliquez ici pour ajouter
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

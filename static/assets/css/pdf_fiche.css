@@ -1,0 +1,79 @@
+@page {
+    size: A4;
+    margin: 2cm;
+}
+
+body {
+    font-family: "DejaVu Sans", sans-serif;
+    color: #333;
+    line-height: 1.6;
+    font-size: 12pt;
+    background: white;
+}
+
+#job-listing {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+header {
+    border-bottom: 2px solid #005baa;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 20pt;
+    color: #005baa;
+    margin-bottom: 5px;
+}
+
+header p {
+    margin: 2px 0;
+    font-size: 11pt;
+}
+
+.job-details h2 {
+    font-size: 14pt;
+    color: #005baa;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 4px;
+}
+
+ul.tasks, ul.skills {
+    list-style: none;
+    padding-left: 0;
+}
+
+ul.tasks li, ul.skills li {
+    margin-bottom: 6px;
+    padding-left: 12px;
+    position: relative;
+}
+
+ul.tasks li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #005baa;
+    font-weight: bold;
+}
+
+ul.skills li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: green;
+    font-weight: bold;
+}
+
+div span {
+    display: block;
+    margin-top: 30px;
+    font-style: italic;
+    font-size: 11pt;
+    color: #555;
+}
