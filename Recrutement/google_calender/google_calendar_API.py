@@ -1,30 +1,81 @@
+import os
 import uuid
+import socket
+
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, JsonResponse
 
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
+from google_auth_oauthlib.flow import Flow
 from google.auth.transport.requests import Request
-import os.path
 
-import RHPROJECT.settings
-from  Recrutement.models import *
-from Recrutement.models import Candidature
+from RHPROJECT import settings
+from Recrutement.models import Candidature, Entretien
 from Recrutement.forms import EvenementForm
-
-from django.conf import settings
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
-def get_calendar_service(user_email):
-    creds = None
+
+# 🔐 Connexion à Google Calendar (initie le flow OAuth)
+def connect_google_calendar(request, id, pk):
+    user_email = request.user.email
+    request.session['user_email'] = user_email
+    request.session['id'] = id
+    request.session['pk'] = pk
+
+    credentials_path = os.path.join(settings.BASE_DIR, 'JSON', 'credentials.json')
+
+    flow = Flow.from_client_secrets_file(
+        credentials_path,
+        scopes=SCOPES,
+        redirect_uri=request.build_absolute_uri('/recrutement/oauth2callback/')
+    )
+
+    authorization_url, state = flow.authorization_url(
+        access_type='offline',
+        include_granted_scopes='true'
+    )
+
+    request.session['state'] = state
+    return redirect(authorization_url)
+
+
+# 🔁 Callback après autorisation Google
+def oauth2callback(request):
+    state = request.session.get('state')
+    user_email = request.session.get('user_email')
+    id = request.session.get('id')
+    pk = request.session.get('pk')
+
+    credentials_path = os.path.join(settings.BASE_DIR, 'JSON', 'credentials.json')
+
+    flow = Flow.from_client_secrets_file(
+        credentials_path,
+        scopes=SCOPES,
+        state=state,
+        redirect_uri=request.build_absolute_uri('/recrutement/oauth2callback/')
+    )
+
+    flow.fetch_token(authorization_response=request.build_absolute_uri())
+    creds = flow.credentials
+
     token_dir = os.path.join(os.path.dirname(__file__), 'tokens')
     os.makedirs(token_dir, exist_ok=True)
-
     token_path = os.path.join(token_dir, f'token_{user_email}.json')
-    credentials_path = os.path.join(os.path.dirname(__file__), 'credentials.json')
 
+    with open(token_path, 'w') as token_file:
+        token_file.write(creds.to_json())
+
+    return redirect("recrutement:ma_vue_avec_bootstrap_modal", id=id, pk=pk)
+
+
+# 🔧 Récupère le service Google Calendar
+def get_calendar_service(user_email):
+    token_dir = os.path.join(os.path.dirname(__file__), 'tokens')
+    token_path = os.path.join(token_dir, f'token_{user_email}.json')
+
+    creds = None
     if os.path.exists(token_path):
         creds = Credentials.from_authorized_user_file(token_path, SCOPES)
 
@@ -32,29 +83,25 @@ def get_calendar_service(user_email):
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
-            creds = flow.run_console()
-            with open(token_path, 'w') as token:
-                token.write(creds.to_json())
+            raise Exception("Utilisateur non authentifié avec Google Calendar.")
 
-    service = build('calendar', 'v3', credentials=creds)
-    return service
+    return build('calendar', 'v3', credentials=creds)
 
 
-def get_events(service):
-    service = get_calendar_service()
-    events = service.events().list(calendarId='primary').execute()
-    return events
-
+# 📅 Crée un événement Google Calendar
 def create_event(event, user_email):
     service = get_calendar_service(user_email)
-    created_event = service.events().insert(calendarId='primary', body=event, conferenceDataVersion=1).execute()
+    created_event = service.events().insert(
+        calendarId='primary',
+        body=event,
+        conferenceDataVersion=1
+    ).execute()
+
     print(f"Événement créé : {created_event.get('htmlLink')}")
     return created_event
 
-from django.http import JsonResponse
-import socket
 
+# 📝 Vue pour ajouter un événement via formulaire
 def ajouter_evenement(request, id, pk):
     candidat = Candidature.objects.get(id=id)
     utilisateur = request.user.username
@@ -86,8 +133,6 @@ def ajouter_evenement(request, id, pk):
             try:
                 created_event = create_event(event, user_email)
 
-                from Recrutement.models import Entretien
-
                 Entretien.objects.create(
                     candidature=candidat,
                     google_event_id=created_event["id"],
@@ -104,7 +149,6 @@ def ajouter_evenement(request, id, pk):
                     return JsonResponse({'success': True})
                 return redirect('recrutement:candidat_preselectionés', pk)
 
-
             except (socket.gaierror, ConnectionError, Exception) as e:
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                     return JsonResponse({'success': False, 'error': str(e)}, status=503)
@@ -117,32 +161,14 @@ def ajouter_evenement(request, id, pk):
     return render(request, 'recrutement/entretiens/ajouter.html', {'form': form, "username": utilisateur})
 
 
-def connect_google_calendar(request, id, pk):
-    user_email = request.user.email
-    token_dir = os.path.join(os.path.dirname(__file__), 'tokens')
-    os.makedirs(token_dir, exist_ok=True)
-
-    token_path = os.path.join(token_dir, f'token_{user_email}.json')
-    credentials_path = os.path.join(RHPROJECT.settings.BASE_DIR, 'JSON', 'credentials.json')
-
-    flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
-    creds = flow.run_console()
-
-    with open(token_path, 'w') as token_file:
-        token_file.write(creds.to_json())
-
-    return redirect("recrutement:ma_vue_avec_bootstrap_modal", id, pk)
-
-
-
+# 🎯 Vue pour afficher la modal Bootstrap après connexion
 def ma_vue_avec_bootstrap_modal(request, id, pk):
     context = {
         'show_modal': True,
         'modal_title': "Confirmation",
         'modal_body_text': "Cliquez pour Continuer",
         'link_text': "Continuer",
-        'id':id,
+        'id': id,
         'pk': pk
     }
     return render(request, 'recrutement/entretiens/popupConnection.html', context)
-
