@@ -126,7 +126,7 @@ def connect_google_calendar(request, id, pk):
     credentials_path = os.path.join(RHPROJECT.settings.BASE_DIR, 'JSON', 'credentials.json')
 
     flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
-    creds = flow.run_local_server(port=0)
+    creds = flow.run_console()
 
     with open(token_path, 'w') as token_file:
         token_file.write(creds.to_json())
