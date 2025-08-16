@@ -19,7 +19,7 @@
         <div class="card-body">
             <h1 class="card-title text-center mb-4">Créer un nouvel entretien</h1>
 
-            <form method="post" class="mt-4">
+            <form method="post" action="{% url 'recrutement:entretien' %}" class="mt-4">
                 {% csrf_token %}
                 <fieldset class="mb-3">
                     <div class="mb-3">
