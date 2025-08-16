@@ -164,11 +164,11 @@ def ajouter_evenement(request, id, pk):
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'success': False, 'errors': form.errors}, status=400)
             else:
-                return render(request, 'recrutement/entretiens/ajouter.html', {'form': form, "username": utilisateur, 'id':id, 'pk':pk})
+                return render(request, 'recrutement/entretiens/ajouter.html', {'form': form, "username": utilisateur, 'id': id, 'pk': pk})
     else:
         form = EvenementForm()
 
-        return render(request, 'recrutement/entretiens/ajouter.html', {'form': form, "username": utilisateur, 'id':id, 'pk':pk})
+        return render(request, 'recrutement/entretiens/ajouter.html', {'form': form, "username": utilisateur, 'id': id, 'pk': pk})
 
 
 # 🎯 Vue pour afficher la modal Bootstrap après connexion
