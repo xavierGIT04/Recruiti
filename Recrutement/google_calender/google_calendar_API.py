@@ -112,15 +112,15 @@ def ajouter_evenement(request, id, pk):
         if form.is_valid():
             summary = form.cleaned_data['summary']
             description = form.cleaned_data['description']
-            start = form.cleaned_data['start_datetime'].isoformat()
-            end = form.cleaned_data['end_datetime'].isoformat()
+            start_datetime = form.cleaned_data['start_datetime']
+            end_datetime = form.cleaned_data['end_datetime']
             email = candidat.mail
 
             event = {
                 'summary': summary,
                 'description': description,
-                'start': {'dateTime': start, 'timeZone': 'Europe/Paris'},
-                'end': {'dateTime': end, 'timeZone': 'Europe/Paris'},
+                'start': {'dateTime': start_datetime.isoformat(), 'timeZone': 'Europe/Paris'},
+                'end': {'dateTime': end_datetime.isoformat(), 'timeZone': 'Europe/Paris'},
                 'attendees': [{'email': email}],
                 'conferenceData': {
                     'createRequest': {
@@ -138,22 +138,33 @@ def ajouter_evenement(request, id, pk):
                     google_event_id=created_event["id"],
                     summary=summary,
                     description=description,
-                    start_datetime=form.cleaned_data["start_datetime"],
-                    end_datetime=form.cleaned_data["end_datetime"],
+                    start_datetime=start_datetime,
+                    end_datetime=end_datetime,
                     meeting_link=created_event.get("hangoutLink", ""),
                     created_by=request.user,
                     statu="scheduled"
                 )
 
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({'success': True, 'message': 'Entretien créé avec succès!'})
+                else:
                     return redirect('recrutement:entretiens_programmés')
 
             except (socket.gaierror, ConnectionError, Exception) as e:
+                error_message = f"Une erreur est survenue lors de la création de l'événement: {str(e)}"
+                
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                    return JsonResponse({'success': False, 'error': str(e)}, status=503)
-
+                    return JsonResponse({'success': False, 'error': error_message}, status=500)
+                else:
+                    form.add_error(None, error_message) # Ajoute une erreur non liée à un champ
+                    # Reprendre le rendu du formulaire avec les erreurs
+                    return render(request, 'recrutement/entretiens/ajouter.html', {'form': form, "username": utilisateur})
         else:
-            return render(request, 'recrutement/entretiens/ajouter.html', {'form': form, "username": utilisateur})
+            # Si le formulaire n'est pas valide
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+            else:
+                return render(request, 'recrutement/entretiens/ajouter.html', {'form': form, "username": utilisateur, 'id':id, 'pk':pk})
     else:
         form = EvenementForm()
 
