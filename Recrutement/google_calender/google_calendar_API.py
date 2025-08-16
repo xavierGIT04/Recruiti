@@ -168,7 +168,7 @@ def ajouter_evenement(request, id, pk):
     else:
         form = EvenementForm()
 
-    return render(request, 'recrutement/entretiens/ajouter.html', {'form': form, "username": utilisateur, 'id':id, 'pk':pk})
+        return render(request, 'recrutement/entretiens/ajouter.html', {'form': form, "username": utilisateur, 'id':id, 'pk':pk})
 
 
 # 🎯 Vue pour afficher la modal Bootstrap après connexion
