@@ -91,6 +91,11 @@ def oauth2callback(request):
 
         # Redirection finale avec les paramètres récupérés
         return redirect("recrutement:ma_vue_avec_bootstrap_modal", id=id, pk=pk)
+    
+    except Exception as e:
+        # Gérer les erreurs de connexion ou de token
+        print(f"Erreur d'authentification: {e}")
+        return redirect('recrutement:page_erreur_de_connexion')
 
 
 # 🔧 Récupère le service Google Calendar
