@@ -20,7 +20,7 @@
                 </div>
                 <div class="modal-body">
                     <p>{{ modal_body_text }}</p>
-                    <a href="{% url 'recrutement:entretien' id pk %}" class="btn btn-primary">{{ link_text }}</a>
+                    <a href="{% url 'recrutement:entretien' id=id pk=pk %}" class="btn btn-primary">{{ link_text }}</a>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
