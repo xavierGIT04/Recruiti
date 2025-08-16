@@ -146,8 +146,7 @@ def ajouter_evenement(request, id, pk):
                 )
 
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                    return JsonResponse({'success': True})
-                return redirect('recrutement:candidat_preselectionés', pk)
+                    return redirect('recrutement:entretiens_programmés')
 
             except (socket.gaierror, ConnectionError, Exception) as e:
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
