@@ -1,7 +1,8 @@
 import os
 import uuid
 import socket
-
+import base64
+import json
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 
