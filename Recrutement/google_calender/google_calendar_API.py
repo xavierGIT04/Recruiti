@@ -3,7 +3,7 @@ import base64
 import google.auth.transport.requests
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.conf import settings
 
