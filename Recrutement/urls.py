@@ -10,7 +10,7 @@ urlpatterns = [
     path('connect-google/<int:id>/<int:pk>/', google_calendar_API.connect_google_calendar, name='connect_google_calendar'),
     path('confirmation/connection/<int:id>/<int:pk>/', google_calendar_API.ma_vue_avec_bootstrap_modal, name='ma_vue_avec_bootstrap_modal'),
     path('entretien/<int:id>/<int:pk>/', google_calendar_API.ajouter_evenement, name='entretien'),
-    path('oauth2callback/<int:id>/<int:pk>/', google_calendar_API.oauth2callback, name='oauth2callback'),    
+    path('oauth2callback/', google_calendar_API.oauth2callback, name='oauth2callback'),    
     path('entretien/update/annuler/<int:id>/', views.annuler_entretien, name='annuler_entretien'),
     path('entretien/update/terminer/<int:id>/', views.marquer_comme_terminer, name='marquer_comme_terminer'),
 
