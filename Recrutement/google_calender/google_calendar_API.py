@@ -1,8 +1,7 @@
 import os
 import uuid
 import socket
-import base64
-import json
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 
@@ -15,27 +14,17 @@ from RHPROJECT import settings
 from Recrutement.models import Candidature, Entretien
 from Recrutement.forms import EvenementForm
 
-SCOPES = ['https://www.googleapis.com/auth/calendar.events', 'https://www.googleapis.com/auth/calendar']
+SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 
 # 🔐 Connexion à Google Calendar (initie le flow OAuth)
 def connect_google_calendar(request, id, pk):
-    """
-    Initialise le flux d'autorisation Google sans utiliser la session pour id et pk.
-    Ces variables sont encodées dans le paramètre `state`.
-    """
     user_email = request.user.email
+    request.session['user_email'] = user_email
+    request.session['id'] = id
+    request.session['pk'] = pk
 
     credentials_path = os.path.join(settings.BASE_DIR, 'JSON', 'credentials.json')
-
-    # Encodage des paramètres id et pk dans le paramètre `state`
-    # Cela permet de les récupérer plus tard sans dépendre de la session
-    state_data = {
-        'id': id,
-        'pk': pk,
-        'email': user_email,
-    }
-    encoded_state = base64.urlsafe_b64encode(json.dumps(state_data).encode()).decode()
 
     flow = Flow.from_client_secrets_file(
         credentials_path,
@@ -43,57 +32,42 @@ def connect_google_calendar(request, id, pk):
         redirect_uri=request.build_absolute_uri('/recrutement/oauth2callback/')
     )
 
-    authorization_url, _ = flow.authorization_url(
+    authorization_url, state = flow.authorization_url(
         access_type='offline',
-        include_granted_scopes='true',
-        state=encoded_state # Utilisation du paramètre d'état encodé
+        include_granted_scopes='true'
     )
 
+    request.session['state'] = state
     return redirect(authorization_url)
+
 
 # 🔁 Callback après autorisation Google
 def oauth2callback(request):
-    """
-    Vue de rappel pour l'autorisation Google.
-    Elle décode les paramètres id et pk du paramètre `state`.
-    """
-   
-
-    # Décodage de la chaîne `state` pour récupérer les paramètres
-    encoded_state = request.GET.get('state')
-    state_data = json.loads(base64.urlsafe_b64decode(encoded_state.encode()).decode())
-
-    # Récupération des paramètres sans utiliser la session
-    id = state_data.get('id')
-    pk = state_data.get('pk')
-    user_email = state_data.get('email')
+    state = request.session.get('state')
+    user_email = request.session.get('user_email')
+    id = request.session.get('id')
+    pk = request.session.get('pk')
 
     credentials_path = os.path.join(settings.BASE_DIR, 'JSON', 'credentials.json')
 
     flow = Flow.from_client_secrets_file(
         credentials_path,
         scopes=SCOPES,
+        state=state,
         redirect_uri=request.build_absolute_uri('/recrutement/oauth2callback/')
     )
 
-    try:
-        flow.fetch_token(authorization_response=request.build_absolute_uri())
-        creds = flow.credentials
+    flow.fetch_token(authorization_response=request.build_absolute_uri())
+    creds = flow.credentials
 
-        token_dir = os.path.join(os.path.dirname(__file__), 'tokens')
-        os.makedirs(token_dir, exist_ok=True)
-        token_path = os.path.join(token_dir, f'token_{user_email}.json')
+    token_dir = os.path.join(os.path.dirname(__file__), 'tokens')
+    os.makedirs(token_dir, exist_ok=True)
+    token_path = os.path.join(token_dir, f'token_{user_email}.json')
 
-        with open(token_path, 'w') as token_file:
-            token_file.write(creds.to_json())
+    with open(token_path, 'w') as token_file:
+        token_file.write(creds.to_json())
 
-        # Redirection finale avec les paramètres récupérés
-        return redirect("recrutement:ma_vue_avec_bootstrap_modal", id=id, pk=pk)
-    
-    except Exception as e:
-        # Gérer les erreurs de connexion ou de token
-        print(f"Erreur d'authentification: {e}")
-        return redirect('recrutement:page_erreur_de_connexion')
+    return redirect("recrutement:ma_vue_avec_bootstrap_modal", id=id, pk=pk)
 
 
 # 🔧 Récupère le service Google Calendar
@@ -138,15 +112,15 @@ def ajouter_evenement(request, id, pk):
         if form.is_valid():
             summary = form.cleaned_data['summary']
             description = form.cleaned_data['description']
-            start_datetime = form.cleaned_data['start_datetime']
-            end_datetime = form.cleaned_data['end_datetime']
+            start = form.cleaned_data['start_datetime'].isoformat()
+            end = form.cleaned_data['end_datetime'].isoformat()
             email = candidat.mail
 
             event = {
                 'summary': summary,
                 'description': description,
-                'start': {'dateTime': start_datetime.isoformat(), 'timeZone': 'Europe/Paris'},
-                'end': {'dateTime': end_datetime.isoformat(), 'timeZone': 'Europe/Paris'},
+                'start': {'dateTime': start, 'timeZone': 'Europe/Paris'},
+                'end': {'dateTime': end, 'timeZone': 'Europe/Paris'},
                 'attendees': [{'email': email}],
                 'conferenceData': {
                     'createRequest': {
@@ -164,37 +138,27 @@ def ajouter_evenement(request, id, pk):
                     google_event_id=created_event["id"],
                     summary=summary,
                     description=description,
-                    start_datetime=start_datetime,
-                    end_datetime=end_datetime,
+                    start_datetime=form.cleaned_data["start_datetime"],
+                    end_datetime=form.cleaned_data["end_datetime"],
                     meeting_link=created_event.get("hangoutLink", ""),
                     created_by=request.user,
                     statu="scheduled"
                 )
 
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                    return JsonResponse({'success': True, 'message': 'Entretien créé avec succès!'})
-                else:
-                    return redirect('recrutement:entretiens_programmés')
+                    return JsonResponse({'success': True})
+                return redirect('recrutement:candidat_preselectionés', pk)
 
             except (socket.gaierror, ConnectionError, Exception) as e:
-                error_message = f"Une erreur est survenue lors de la création de l'événement: {str(e)}"
-                
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                    return JsonResponse({'success': False, 'error': error_message}, status=500)
-                else:
-                    form.add_error(None, error_message) # Ajoute une erreur non liée à un champ
-                    # Reprendre le rendu du formulaire avec les erreurs
-                    return render(request, 'recrutement/entretiens/ajouter.html', {'form': form, "username": utilisateur})
+                    return JsonResponse({'success': False, 'error': str(e)}, status=503)
+
         else:
-            # Si le formulaire n'est pas valide
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({'success': False, 'errors': form.errors}, status=400)
-            else:
-                return render(request, 'recrutement/entretiens/ajouter.html', {'form': form, "username": utilisateur, 'id': id, 'pk': pk})
+            return render(request, 'recrutement/entretiens/ajouter.html', {'form': form, "username": utilisateur})
     else:
         form = EvenementForm()
 
-    return render(request, 'recrutement/entretiens/ajouter.html', {'form': form, "username": utilisateur, 'id': id, 'pk': pk})
+    return render(request, 'recrutement/entretiens/ajouter.html', {'form': form, "username": utilisateur})
 
 
 # 🎯 Vue pour afficher la modal Bootstrap après connexion
