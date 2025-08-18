@@ -139,3 +139,12 @@ CLOUDINARY_STORAGE = {
     'API_KEY': os.getenv('API_KEY'),
     'API_SECRET':os.getenv('API_SECRET')
 }
+
+# ✅ Sécurité des cookies de session
+SESSION_COOKIE_SECURE = True  # Active le cookie sécurisé (HTTPS obligatoire)
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Stockage en base de données
+
+# Optionnel mais utile :
+SESSION_COOKIE_HTTPONLY = True  # Empêche l'accès au cookie via JavaScript
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Garde la session active après fermeture du navigateur
+SESSION_COOKIE_AGE = 1209600  # Durée de vie en secondes (2 semaines)
