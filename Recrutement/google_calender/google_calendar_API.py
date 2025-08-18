@@ -3,9 +3,10 @@ import base64
 import google.auth.transport.requests
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.conf import settings
+
 
 SCOPES = [
     'https://www.googleapis.com/auth/calendar',
