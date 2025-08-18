@@ -1,102 +1,73 @@
 import os
 import uuid
 import socket
-import base64
-import json
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import Flow
+from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
 from RHPROJECT import settings
 from Recrutement.models import Candidature, Entretien
 from Recrutement.forms import EvenementForm
 
-SCOPES = ['https://www.googleapis.com/auth/calendar.events', 'https://www.googleapis.com/auth/calendar']
+SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 
 # 🔐 Connexion à Google Calendar (initie le flow OAuth)
 def connect_google_calendar(request, id, pk):
-    """
-    Initialise le flux d'autorisation Google sans utiliser la session pour id et pk.
-    Ces variables sont encodées dans le paramètre `state`.
-    """
     user_email = request.user.email
+    request.session['user_email'] = user_email
+    request.session['id'] = id
+    request.session['pk'] = pk
 
     credentials_path = os.path.join(settings.BASE_DIR, 'JSON', 'credentials.json')
 
-    # Encodage des paramètres id et pk dans le paramètre `state`
-    # Cela permet de les récupérer plus tard sans dépendre de la session
-    state_data = {
-        'id': id,
-        'pk': pk,
-        'email': user_email,
-    }
-    encoded_state = base64.urlsafe_b64encode(json.dumps(state_data).encode()).decode()
-
-    flow = Flow.from_client_secrets_file(
+    flow = InstalledAppFlow.from_client_secrets_file(
         credentials_path,
         scopes=SCOPES,
         redirect_uri=request.build_absolute_uri('/recrutement/oauth2callback/')
     )
 
-    authorization_url, _ = flow.authorization_url(
+    authorization_url, state = flow.authorization_url(
         access_type='offline',
-        include_granted_scopes='true',
-        state=encoded_state # Utilisation du paramètre d'état encodé
+        include_granted_scopes='true'
     )
 
+    request.session['state'] = state
     return redirect(authorization_url)
+
 
 # 🔁 Callback après autorisation Google
 def oauth2callback(request):
-    """
-    Vue de rappel pour l'autorisation Google.
-    Elle décode les paramètres id et pk du paramètre `state`.
-    """
-    # Vérifie si le paramètre `state` est présent dans la requête
-    if 'state' not in request.GET:
-        # Gérer l'erreur si le paramètre `state` est manquant
-        return redirect('recrutement:page_erreur') 
-
-    # Décodage de la chaîne `state` pour récupérer les paramètres
-    encoded_state = request.GET.get('state')
-    state_data = json.loads(base64.urlsafe_b64decode(encoded_state.encode()).decode())
-
-    # Récupération des paramètres sans utiliser la session
-    id = state_data.get('id')
-    pk = state_data.get('pk')
-    user_email = state_data.get('email')
+    state = request.session.get('state')
+    user_email = request.session.get('user_email')
+    id = request.session.get('id')
+    pk = request.session.get('pk')
 
     credentials_path = os.path.join(settings.BASE_DIR, 'JSON', 'credentials.json')
 
-    flow = Flow.from_client_secrets_file(
+    flow = InstalledAppFlow.from_client_secrets_file(
         credentials_path,
         scopes=SCOPES,
+        state=state,
         redirect_uri=request.build_absolute_uri('/recrutement/oauth2callback/')
     )
 
-    try:
-        flow.fetch_token(authorization_response=request.build_absolute_uri())
-        creds = flow.credentials
+    flow.fetch_token(authorization_response=request.build_absolute_uri())
+    creds = flow.run_local_server(port=0)
 
-        token_dir = os.path.join(os.path.dirname(__file__), 'tokens')
-        os.makedirs(token_dir, exist_ok=True)
-        token_path = os.path.join(token_dir, f'token_{user_email}.json')
+    token_dir = os.path.join(os.path.dirname(__file__), 'tokens')
+    os.makedirs(token_dir, exist_ok=True)
+    token_path = os.path.join(token_dir, f'token_{user_email}.json')
 
-        with open(token_path, 'w') as token_file:
-            token_file.write(creds.to_json())
+    with open(token_path, 'w') as token_file:
+        token_file.write(creds.to_json())
 
-        # Redirection finale avec les paramètres récupérés
-        return redirect("recrutement:ma_vue_avec_bootstrap_modal", id=id, pk=pk)
-    
-    except Exception as e:
-        # Gérer les erreurs de connexion ou de token
-        print(f"Erreur d'authentification: {e}")
-        return redirect('recrutement:page_erreur_de_connexion')
+    return redirect("recrutement:ma_vue_avec_bootstrap_modal", id=id, pk=pk)
 
 
 # 🔧 Récupère le service Google Calendar
