@@ -6,7 +6,9 @@ from googleapiclient.discovery import build
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.conf import settings
-
+from RHPROJECT import settings
+from Recrutement.models import Candidature, Entretien
+from Recrutement.forms import EvenementF
 
 SCOPES = [
     'https://www.googleapis.com/auth/calendar',
