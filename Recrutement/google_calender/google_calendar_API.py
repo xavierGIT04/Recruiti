@@ -25,15 +25,17 @@ CREDENTIALS_PATH = os.path.join(settings.BASE_DIR, 'JSON', 'credentials.json')
 
 # 🔐 Initie le flow OAuth Google
 def connect_google_calendar(request, id, pk):
-   base_redirect_uri = request.build_absolute_uri(reverse('recrutement:oauth2callback'))
-   query_params = urlencode({'id': id, 'pk': pk})
-   redirect_uri = f"{base_redirect_uri}?{query_params}"
+   request.session['id'] = id
+   request.session['pk'] = pk
+   request.session['user_email'] = request.user.email
+
+   redirect_uri = request.build_absolute_uri(reverse('recrutement:oauth2callback'))
 
    flow = Flow.from_client_secrets_file(
         CREDENTIALS_PATH,
-        scopes=['https://www.googleapis.com/auth/calendar'],
+        scopes=SCOPES,
         redirect_uri=redirect_uri
-    )
+   )
 
    authorization_url, state = flow.authorization_url(
         access_type='offline',
@@ -47,14 +49,17 @@ def connect_google_calendar(request, id, pk):
 # 🔁 Callback après autorisation Google
 def oauth2callback(request, id, pk):
    state = request.session.get('state')
-   id = request.GET.get('id')
-   pk = request.GET.get('pk')
+   user_email = request.session.get('user_email')
+   id = request.session.get('id')
+   pk = request.session.get('pk')
+
+   redirect_uri = request.build_absolute_uri(reverse('recrutement:oauth2callback'))
 
    flow = Flow.from_client_secrets_file(
-        'client_secret.json',
-        scopes=['https://www.googleapis.com/auth/calendar'],
+        CREDENTIALS_PATH,
+        scopes=SCOPES,
         state=state,
-        redirect_uri=request.build_absolute_uri(reverse('recrutement:oauth2callback'))
+        redirect_uri=redirect_uri
    )
 
    flow.fetch_token(authorization_response=request.build_absolute_uri())
@@ -68,23 +73,22 @@ def oauth2callback(request, id, pk):
 
    return redirect(reverse('recrutement:ma_vue_avec_bootstrap_modal', kwargs={'id': id, 'pk': pk}))
 
-
 # 🔧 Récupère le service Google Calendar
 def get_calendar_service(user_email):
-    token_path = os.path.join(TOKEN_DIR, f'token_{user_email}.json')
+   token_path = os.path.join(TOKEN_DIR, f'token_{user_email}.json')
 
-    if not os.path.exists(token_path):
+   if not os.path.exists(token_path):
         raise Exception("Token Google introuvable.")
 
-    creds = Credentials.from_authorized_user_file(token_path, SCOPES)
+   creds = Credentials.from_authorized_user_file(token_path, SCOPES)
 
-    if not creds.valid:
-        if creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            raise Exception("Token Google invalide ou expiré.")
+   if not creds.valid:
+      if creds.expired and creds.refresh_token:
+         creds.refresh(Request())
+      else:
+          raise Exception("Token Google invalide ou expiré.")
 
-    return build('calendar', 'v3', credentials=creds)
+   return build('calendar', 'v3', credentials=creds)
 
 
 # 📅 Crée un événement Google Calendar
