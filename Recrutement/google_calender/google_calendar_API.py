@@ -34,10 +34,11 @@ def connect_google_calendar(request, id , pk):
     )
 
     state = encode_state(id, pk)
-    flow.params['access_type'] = 'offline'
-    flow.params['include_granted_scopes'] = 'true'
-
-    authorization_url, _ = flow.authorization_url(state=state)
+    authorization_url, _ = flow.authorization_url(
+        access_type='offline',
+        include_granted_scopes='true',
+        state=state
+    )
     return redirect(authorization_url)
 
 def oauth2callback(request):
