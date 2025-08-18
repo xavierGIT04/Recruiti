@@ -1,77 +1,84 @@
 import os
-import uuid
-import socket
-import datetime
-import json
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponseBadRequest
-from django.urls import reverse
-
-from googleapiclient.discovery import build
-from google.oauth2.credentials import Credentials
+import base64
+import google.auth.transport.requests
 from google_auth_oauthlib.flow import Flow
-from google.auth.transport.requests import Request
+from googleapiclient.discovery import build
+from django.shortcuts import redirect
+from django.http import HttpResponse
+from django.conf import settings
 
-from RHPROJECT import settings
-from Recrutement.models import Candidature, Entretien
-from Recrutement.forms import EvenementForm
-from django.utils.http import urlencode
+SCOPES = ['https://www.googleapis.com/auth/calendar.events']
+CLIENT_SECRETS_FILE = os.path.join(settings.BASE_DIR, 'credentials.json')
 
-SCOPES = ['https://www.googleapis.com/auth/calendar.events', 'https://www.googleapis.com/auth/calendar']
-TOKEN_DIR = os.path.join(os.path.dirname(__file__), 'tokens')
-CREDENTIALS_PATH = os.path.join(settings.BASE_DIR, 'JSON', 'credentials.json')
+def encode_state(id, pk):
+    raw = f"{id}:{pk}"
+    return base64.urlsafe_b64encode(raw.encode()).decode()
 
+def decode_state(state):
+    try:
+        raw = base64.urlsafe_b64decode(state.encode()).decode()
+        id, pk = raw.split(":")
+        return id, pk
+    except Exception:
+        return None, None
 
-# 🔐 Initie le flow OAuth Google
-def connect_google_calendar(request, id, pk):
-   request.session['id'] = id
-   request.session['pk'] = pk
-   request.session['user_email'] = request.user.email
+def start_google_calendar_auth(request):
+    id = request.GET.get('id')
+    pk = request.GET.get('pk')
 
-   redirect_uri = request.build_absolute_uri(reverse('recrutement:oauth2callback'))
+    if not id or not pk:
+        return HttpResponse("Paramètres manquants")
 
-   flow = Flow.from_client_secrets_file(
-        CREDENTIALS_PATH,
+    flow = Flow.from_client_secrets_file(
+        CLIENT_SECRETS_FILE,
         scopes=SCOPES,
-        redirect_uri=redirect_uri
-   )
+        redirect_uri='https://recruiti.onrender.com/recrutement/oauth2callback/'
+    )
 
-   authorization_url, state = flow.authorization_url(
-        access_type='offline',
-        include_granted_scopes='true'
-   )
+    state = encode_state(id, pk)
+    flow.params['access_type'] = 'offline'
+    flow.params['include_granted_scopes'] = 'true'
 
-   request.session['state'] = state
-   return redirect(authorization_url)
+    authorization_url, _ = flow.authorization_url(state=state)
+    return redirect(authorization_url)
 
-
-# 🔁 Callback après autorisation Google
 def oauth2callback(request):
-   state = request.session.get('state')
-   user_email = request.session.get('user_email')
-   id = request.session.get('id')
-   pk = request.session.get('pk')
+    state = request.GET.get('state')
+    code = request.GET.get('code')
 
-   redirect_uri = request.build_absolute_uri(reverse('recrutement:oauth2callback'))
+    id, pk = decode_state(state)
+    if not id or not pk:
+        return HttpResponse("Échec du décodage du state")
 
-   flow = Flow.from_client_secrets_file(
-        CREDENTIALS_PATH,
+    flow = Flow.from_client_secrets_file(
+        CLIENT_SECRETS_FILE,
         scopes=SCOPES,
-        state=state,
-        redirect_uri=redirect_uri
-   )
+        redirect_uri='https://recruiti.onrender.com/recrutement/oauth2callback/'
+    )
+    flow.fetch_token(code=code)
 
-   flow.fetch_token(authorization_response=request.build_absolute_uri())
-   creds = flow.credentials
+    credentials = flow.credentials
+    service = build('calendar', 'v3', credentials=credentials)
 
-   os.makedirs(TOKEN_DIR, exist_ok=True)
-   token_path = os.path.join(TOKEN_DIR, f'token_{user_email}.json')
+    event = {
+        'summary': 'Entretien recruteur',
+        'location': 'En ligne',
+        'description': 'Entretien via Google Meet',
+        'start': {
+            'dateTime': '2025-08-18T10:00:00+00:00',
+            'timeZone': 'UTC',
+        },
+        'end': {
+            'dateTime': '2025-08-18T11:00:00+00:00',
+            'timeZone': 'UTC',
+        },
+    }
 
-   with open(token_path, 'w') as token_file:
-      token_file.write(creds.to_json())
+    created_event = service.events().insert(calendarId='primary', body=event).execute()
 
-   return redirect(reverse('recrutement:ma_vue_avec_bootstrap_modal', kwargs={'id': id, 'pk': pk}))
+    # ✅ Redirection vers la popup avec les bons paramètres
+    return redirect('recrutement:ma_vue_avec_bootstrap_modal', id, pk)
+
 
 # 🔧 Récupère le service Google Calendar
 def get_calendar_service(user_email):
