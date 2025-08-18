@@ -16,6 +16,7 @@ from google.auth.transport.requests import Request
 from RHPROJECT import settings
 from Recrutement.models import Candidature, Entretien
 from Recrutement.forms import EvenementForm
+from django.utils.http import urlencode
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.events', 'https://www.googleapis.com/auth/calendar']
 TOKEN_DIR = os.path.join(os.path.dirname(__file__), 'tokens')
@@ -24,10 +25,14 @@ CREDENTIALS_PATH = os.path.join(settings.BASE_DIR, 'JSON', 'credentials.json')
 
 # 🔐 Initie le flow OAuth Google
 def connect_google_calendar(request, id, pk):
+   base_redirect_uri = request.build_absolute_uri(reverse('recrutement:oauth2callback'))
+    query_params = urlencode({'id': id, 'pk': pk})
+    redirect_uri = f"{base_redirect_uri}?{query_params}"
+
     flow = Flow.from_client_secrets_file(
-        CREDENTIALS_PATH,
-        scopes=SCOPES,
-        redirect_uri=request.build_absolute_uri(reverse('recrutement:oauth2callback', args=[id, pk]))
+        'client_secret.json',
+        scopes=['https://www.googleapis.com/auth/calendar'],
+        redirect_uri=redirect_uri
     )
 
     authorization_url, state = flow.authorization_url(
@@ -36,20 +41,20 @@ def connect_google_calendar(request, id, pk):
     )
 
     request.session['state'] = state
-    request.session['user_email'] = request.user.email
     return redirect(authorization_url)
 
 
 # 🔁 Callback après autorisation Google
 def oauth2callback(request, id, pk):
-    state = request.session.get('state')
-    user_email = request.session.get('user_email')
+   state = request.session.get('state')
+    id = request.GET.get('id')
+    pk = request.GET.get('pk')
 
     flow = Flow.from_client_secrets_file(
-        CREDENTIALS_PATH,
-        scopes=SCOPES,
+        'client_secret.json',
+        scopes=['https://www.googleapis.com/auth/calendar'],
         state=state,
-        redirect_uri=request.build_absolute_uri(reverse('recrutement:oauth2callback', args=[id, pk]))
+        redirect_uri=request.build_absolute_uri(reverse('recrutement:oauth2callback'))
     )
 
     flow.fetch_token(authorization_response=request.build_absolute_uri())
