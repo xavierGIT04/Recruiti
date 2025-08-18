@@ -30,7 +30,7 @@ def connect_google_calendar(request, id, pk):
    redirect_uri = f"{base_redirect_uri}?{query_params}"
 
    flow = Flow.from_client_secrets_file(
-        'client_secret.json',
+        CREDENTIALS_PATH,
         scopes=['https://www.googleapis.com/auth/calendar'],
         redirect_uri=redirect_uri
     )
