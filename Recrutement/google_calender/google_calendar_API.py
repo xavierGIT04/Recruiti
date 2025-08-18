@@ -55,18 +55,18 @@ def oauth2callback(request, id, pk):
         scopes=['https://www.googleapis.com/auth/calendar'],
         state=state,
         redirect_uri=request.build_absolute_uri(reverse('recrutement:oauth2callback'))
-    )
+   )
 
-    flow.fetch_token(authorization_response=request.build_absolute_uri())
-    creds = flow.credentials
+   flow.fetch_token(authorization_response=request.build_absolute_uri())
+   creds = flow.credentials
 
-    os.makedirs(TOKEN_DIR, exist_ok=True)
-    token_path = os.path.join(TOKEN_DIR, f'token_{user_email}.json')
+   os.makedirs(TOKEN_DIR, exist_ok=True)
+   token_path = os.path.join(TOKEN_DIR, f'token_{user_email}.json')
 
-    with open(token_path, 'w') as token_file:
-        token_file.write(creds.to_json())
+   with open(token_path, 'w') as token_file:
+      token_file.write(creds.to_json())
 
-    return redirect(reverse('recrutement:ma_vue_avec_bootstrap_modal', kwargs={'id': id, 'pk': pk}))
+   return redirect(reverse('recrutement:ma_vue_avec_bootstrap_modal', kwargs={'id': id, 'pk': pk}))
 
 
 # 🔧 Récupère le service Google Calendar
