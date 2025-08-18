@@ -35,13 +35,13 @@ def connect_google_calendar(request, id, pk):
         redirect_uri=redirect_uri
     )
 
-    authorization_url, state = flow.authorization_url(
+   authorization_url, state = flow.authorization_url(
         access_type='offline',
         include_granted_scopes='true'
-    )
+   )
 
-    request.session['state'] = state
-    return redirect(authorization_url)
+   request.session['state'] = state
+   return redirect(authorization_url)
 
 
 # 🔁 Callback après autorisation Google
