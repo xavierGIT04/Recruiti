@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.conf import settings
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.events']
-CLIENT_SECRETS_FILE = os.path.join(settings.BASE_DIR, 'credentials.json')
+CLIENT_SECRETS_FILE = os.path.join(settings.BASE_DIR, 'JSON', 'credentials.json')
 
 def encode_state(id, pk):
     raw = f"{id}:{pk}"
