@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.conf import settings
 from RHPROJECT import settings
 from Recrutement.models import Candidature, Entretien
-from Recrutement.forms import EvenementF
+from Recrutement.forms import EvenementForm
 
 SCOPES = [
     'https://www.googleapis.com/auth/calendar',
