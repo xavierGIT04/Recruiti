@@ -14,7 +14,7 @@ from RHPROJECT import settings
 from Recrutement.models import Candidature, Entretien
 from Recrutement.forms import EvenementForm
 
-SCOPES = ['https://www.googleapis.com/auth/calendar']
+SCOPES = ['https://www.googleapis.com/auth/calendar.events', 'https://www.googleapis.com/auth/calendar']
 
 
 # 🔐 Connexion à Google Calendar (initie le flow OAuth)
