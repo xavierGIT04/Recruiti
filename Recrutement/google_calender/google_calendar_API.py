@@ -22,7 +22,7 @@ def decode_state(state):
     except Exception:
         return None, None
 
-def start_google_calendar_auth(request):
+def connect_google_calendar(request):
     id = request.GET.get('id')
     pk = request.GET.get('pk')
 
