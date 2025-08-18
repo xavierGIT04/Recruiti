@@ -26,10 +26,10 @@ CREDENTIALS_PATH = os.path.join(settings.BASE_DIR, 'JSON', 'credentials.json')
 # 🔐 Initie le flow OAuth Google
 def connect_google_calendar(request, id, pk):
    base_redirect_uri = request.build_absolute_uri(reverse('recrutement:oauth2callback'))
-    query_params = urlencode({'id': id, 'pk': pk})
-    redirect_uri = f"{base_redirect_uri}?{query_params}"
+   query_params = urlencode({'id': id, 'pk': pk})
+   redirect_uri = f"{base_redirect_uri}?{query_params}"
 
-    flow = Flow.from_client_secrets_file(
+   flow = Flow.from_client_secrets_file(
         'client_secret.json',
         scopes=['https://www.googleapis.com/auth/calendar'],
         redirect_uri=redirect_uri
@@ -47,10 +47,10 @@ def connect_google_calendar(request, id, pk):
 # 🔁 Callback après autorisation Google
 def oauth2callback(request, id, pk):
    state = request.session.get('state')
-    id = request.GET.get('id')
-    pk = request.GET.get('pk')
+   id = request.GET.get('id')
+   pk = request.GET.get('pk')
 
-    flow = Flow.from_client_secrets_file(
+   flow = Flow.from_client_secrets_file(
         'client_secret.json',
         scopes=['https://www.googleapis.com/auth/calendar'],
         state=state,
