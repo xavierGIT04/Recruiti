@@ -47,7 +47,7 @@ def connect_google_calendar(request, id, pk):
 
 
 # 🔁 Callback après autorisation Google
-def oauth2callback(request, id, pk):
+def oauth2callback(request):
    state = request.session.get('state')
    user_email = request.session.get('user_email')
    id = request.session.get('id')
