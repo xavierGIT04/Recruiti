@@ -7,7 +7,7 @@ app_name = "recrutement"
 
 urlpatterns = [
 
-    path('connect-google/', google_calendar_API.connect_google_calendar, name='connect_google_calendar'),
+    path('connect-google/<int:id>/<int:pk>/', google_calendar_API.connect_google_calendar, name='connect_google_calendar'),
     path('confirmation/connection/<int:id>/<int:pk>/', google_calendar_API.ma_vue_avec_bootstrap_modal, name='ma_vue_avec_bootstrap_modal'),
     path('entretien/<int:id>/<int:pk>/', google_calendar_API.ajouter_evenement, name='entretien'),
     path('oauth2callback/', google_calendar_API.oauth2callback, name='oauth2callback'),    
